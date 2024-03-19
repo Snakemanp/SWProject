@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Login,Home} from './Signup.jsx';
+import {Login,Home, Signup} from './Signup.jsx';
 import './index.css';
 import Navbar from './navbar.jsx';
 
@@ -16,6 +16,7 @@ function App() {
       <div>
         {navbardata === 'SIGNIN' && <Login></Login>}
         {navbardata === 'HOME' && <Home />}
+        {navbardata === 'REGISTER' && <Signup />}
       </div>
     </>
   );

@@ -24,6 +24,7 @@ button:focus-visible {
 #root{
   width: 100vw;
   background-image: url('4117465.jpg');
+  background-color: rgba(0, 0, 0, 0.8);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
