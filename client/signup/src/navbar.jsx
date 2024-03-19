@@ -9,10 +9,13 @@ const Navbar = ({buttonpress}) => {
     <nav className='Navbar'>
       <div className='left'>
         <button className='navele' id='logo'>SFSS</button>
-        <button className='navele'>HOME</button>
-        <button className='navele'>RESTAURENTS</button>
+        <button className='navele' onClick={()=>click('HOME')}>HOME</button>
+        <button className='navele'onClick={()=>click('RESTAURANTS')}>RESTAURANTS</button>
       </div>
-      <button className='navele right'>SIGNUP</button>
+      <div className='right'>
+        <button className='navele' onClick={()=>click('SIGNIN')}>SIGNIN</button>
+        <button className='navele' onClick={()=>click('REGISTER')}>REGISTER</button>
+      </div>
     </nav>
   );
 };

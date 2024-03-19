@@ -1,0 +1,35 @@
+  #signinblock {
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-gap: 10px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    margin-top: 15vh; /* Example margin */
+    max-width: 50vw;
+    margin-left: 25vw;
+  }
+  .Home{
+    color: white;
+    text-align: center;
+    margin-top: 15vh;
+  }
+  .Head {
+    grid-column: 1 / -1; /* Span all columns */
+    margin-bottom: 20px; /* Example margin */
+  }
+  
+  .signup {
+    grid-column: 1/-1;;
+    display: grid;
+    grid-template-columns: auto 1fr; /* Two columns, first column width based on content */
+    grid-gap: 10px; /* Gap between grid items */
+    margin-bottom: 20px; /* Example margin */
+  }
+
+  .ele-6 {
+    grid-column: 1 / -1; /* Span all columns */
+    max-width: 100px;
+  }
+  

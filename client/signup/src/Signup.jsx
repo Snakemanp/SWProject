@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import './signup.css'
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -25,17 +25,27 @@ function Login() {
     };
 
     return (
-        <div id='signin block'>
-            <h2>SIGNIN</h2>
-            <form id='signin' className='signup'>
-                <label htmlFor="username1">Username</label>
-                <input id='username1' type='text' value={username} onChange={(e) => setUsername(e.target.value)}></input>
-                <label htmlFor="password1">Password</label>
-                <input id='password1' type='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+        <div id='signinblock'>
+            <h1 className='Head ele-1'>SIGNIN</h1>
+            <form className='grid-ele signup' id='signin'>
+                <label className='grid-ele ele-2' htmlFor="username1">Username</label>
+                <input className='grid-ele ele-3' id='username1' type='text' value={username} onChange={(e) => setUsername(e.target.value)}></input>
+                <label className='grid-ele ele-4' htmlFor="password1">Password</label>
+                <input className='grid-ele ele-5' id='password1' type='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
             </form>
-            <button onClick={send}>Login</button>
+            <p id='message'>{responseData}</p>
+            <button className='grid-ele ele-6' onClick={send}>Login</button>
         </div>
     );
 }
 
-export default Login;
+function Home(){
+    return(
+        <div className='Home'>
+            <h1>Social Service Food Delivery System</h1>
+            <p>Welcome to Social Service Food Delivery Site,<br/> Where you can order from our Restaurants.
+            <br />Feel free to share some of your own and rate on others!</p>
+        </div>
+    );
+}
+ export {Home,Login};

@@ -1,3 +1,7 @@
+body, html,div,p,a {
+  margin: 0;
+  padding: 0;
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -17,4 +21,12 @@ button:hover {
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }*/
-
+#root{
+  width: 100vw;
+  background-image: url('4117465.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  overflow: hidden;
+}
