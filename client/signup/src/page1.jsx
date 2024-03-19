@@ -5,16 +5,16 @@ import './index.css';
 import Navbar from './navbar.jsx';
 
 function App() {
-  const [navbardata, setnavbardata] = useState('HOME');
+  // const [navbardata, setnavbardata] = useState('HOME');
 
-  function getdatafromnavbar(data) {
-    setnavbardata(data);
-  }
+  // function getdatafromnavbar(data) {
+  //   setnavbardata(data);
+  //
 
   return (
     <>
       <BrowserRouter>
-        <Navbar buttonpress={getdatafromnavbar} />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<Login />} />
