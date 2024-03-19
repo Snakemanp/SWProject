@@ -16,8 +16,8 @@ function Login() {
         fetch("http://localhost:5000/signin",data)
         .then(response => response.json())
         .then(data => {
-            console.log(data.users);
-            setResponseData(data.users);
+            console.log(data.message);
+            setResponseData(data.message);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -84,7 +84,7 @@ function Signup() {
     return (
       <div className='signinblock'>
         <h1 className='Head ele-1'>Sign Up</h1>
-        <form onSubmit={handleSubmit} class ='signup'>
+        <form onSubmit={handleSubmit} className ='signup'>
             <label>Username:</label>
             <input
               type="text"

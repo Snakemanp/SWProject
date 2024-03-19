@@ -1,23 +1,55 @@
 const express = require('express');
 const cors = require('cors');
-
+const {connectToDatabase} = require('./data')
 const app = express();
 const port = 5000;
 
 // Enable CORS for all routes
 app.use(cors());
 app.use(express.json());
+let data;
+connectToDatabase()
+    .then(database=>{
+        data=database;
+    })
 
-app.get('/api', (req, res) => {
-    res.json({"users": ["userOne", "UserTwo", "UserThree"]});
-});
-
-app.post('/signin', (req, res) => {
+app.post('/signup', async (req, res) => {
     const requestData = req.body;
-    console.log(requestData); // Logging the received object
-    res.send('Data received successfully');
+    console.log(requestData);
+    
+    // Example: Insert data into a MongoDB collection
+    if(await data.collection('users').findOne({ username: requestData.username })){
+        res.status(501).json({ message: 'OOPS! Username unavailable' });
+        console.log("Alredy exists");
+        return;
+    }
+    try {
+        const result = await data.collection('users').insertOne(requestData);
+        console.log('Inserted document with _id:', result.insertedId);
+        res.json({ message: 'Data received successfully' });
+    } catch (error) {
+        console.error('Error inserting document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
+app.post('/signin', async (req, res) => {
+    const requestData = req.body;
+    console.log(requestData);
+
+    // Example: Query data from a MongoDB collection
+    try {
+        const user = await data.collection('users').findOne({ username: requestData.username });
+        if (user && user.password === requestData.password) {
+            res.json({ message: 'Signin successful' });
+        } else {
+            res.status(401).json({ error: 'Unauthorized' });
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

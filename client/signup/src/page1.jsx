@@ -4,7 +4,7 @@ import './index.css';
 import Navbar from './navbar.jsx';
 
 function App() {
-  const [navbardata, setnavbardata] = useState('Home');
+  const [navbardata, setnavbardata] = useState('HOME');
 
   function getdatafromnavbar(data) {
     setnavbardata(data);

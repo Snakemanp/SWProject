@@ -31,7 +31,7 @@
   }
   .ele-6 {
     grid-column: 1 / -1; /* Span all columns */
-    max-width: 200px;
+    min-width: 200px;
   }
   .ele-7 {
     grid-column: 1 / -1; /* Span all columns */

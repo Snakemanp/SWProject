@@ -8,7 +8,7 @@ const Navbar = ({buttonpress}) => {
   return (
     <nav className='Navbar'>
       <div className='left'>
-        <button className='navele' id='logo'>SFSS</button>
+        <button className='navele' id='logo'>SSFDS</button>
         <button className='navele' onClick={()=>click('HOME')}>HOME</button>
         <button className='navele'onClick={()=>click('RESTAURANTS')}>RESTAURANTS</button>
       </div>
