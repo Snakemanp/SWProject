@@ -1,20 +1,25 @@
 import React from 'react';
 import './navbar.css';
-const Navbar = ({buttonpress}) => {
-  function click(name) {
-    buttonpress(name);
-  }
-
+import { Link } from 'react-router-dom';
+const Navbar = () => {
   return (
     <nav className='Navbar'>
       <div className='left'>
-        <button className='navele' id='logo'>SSFDS</button>
-        <button className='navele' onClick={()=>click('HOME')}>HOME</button>
-        <button className='navele'onClick={()=>click('RESTAURANTS')}>RESTAURANTS</button>
+        <button className='navele' id='logo'>SFSS</button>
+        <Link to='/'>
+        <button className='navele' >HOME</button>
+        </Link>
+        <Link to='/restuarants'>
+        <button className='navele'>RESTAURANTS</button>
+        </Link>
       </div>
       <div className='right'>
-        <button className='navele' onClick={()=>click('SIGNIN')}>SIGNIN</button>
-        <button className='navele' onClick={()=>click('REGISTER')}>REGISTER</button>
+        <Link to='/signin'>
+        <button className='navele' >SIGNIN</button>
+        </Link>
+        <Link to='/signup'>
+        <button className='navele' >REGISTER</button>
+        </Link>
       </div>
     </nav>
   );

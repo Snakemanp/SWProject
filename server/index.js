@@ -18,13 +18,13 @@ app.post('/signup', async (req, res) => {
     console.log(requestData);
     
     // Example: Insert data into a MongoDB collection
-    if(await data.collection('users').findOne({ username: requestData.username })){
+    if(await data.collection('accounts').findOne({ username: requestData.username })){
         res.status(501).json({ message: 'OOPS! Username unavailable' });
         console.log("Alredy exists");
         return;
     }
     try {
-        const result = await data.collection('users').insertOne(requestData);
+        const result = await data.collection('accounts').insertOne(requestData);
         console.log('Inserted document with _id:', result.insertedId);
         res.json({ message: 'Data received successfully' });
     } catch (error) {
@@ -39,7 +39,7 @@ app.post('/signin', async (req, res) => {
 
     // Example: Query data from a MongoDB collection
     try {
-        const user = await data.collection('users').findOne({ username: requestData.username });
+        const user = await data.collection('accounts').findOne({ username: requestData.username });
         if (user && user.password === requestData.password) {
             res.json({ message: 'Signin successful' });
         } else {
@@ -47,6 +47,17 @@ app.post('/signin', async (req, res) => {
         }
     } catch (error) {
         console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/restaurants', async (req, res) => {
+    try {
+        // Assuming you have a collection named 'restaurants' in your database
+        const restaurants = await data.collection('accounts').find({userType: 'RESTAURANT'}).toArray();
+        res.json(restaurants);
+    } catch (error) {
+        console.error('Error querying restaurants:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

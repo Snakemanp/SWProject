@@ -55,7 +55,7 @@ function Signup() {
     const [password, setPassword] = useState('');
     const [location, setLocation] = useState('');
     const [userType, setUserType] = useState('CUSTOMER');
-  
+    const [responseData,setresponseData] = useState('');
     const handleSubmit = (e) => {
       e.preventDefault();
       // Validation logic
@@ -73,8 +73,8 @@ function Signup() {
       fetch("http://localhost:5000/signup",data)
       .then(response => response.json())
         .then(data => {
-            console.log(data.users);
-            setResponseData(data.users);
+            console.log(data.message);
+            setresponseData(data.message);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -119,9 +119,42 @@ function Signup() {
               <option value="NGO">NGO</option>
               <option value="CUSTOMER">Customer</option>
             </select>
-            <button type="submit">Sign Up</button>
+            <p className='grid-ele ele-7'>{responseData}</p>
+            <button type="submit" className='grid-ele ele-7'>Sign Up</button>
         </form>
       </div>
     );
   }
- export {Home,Login,Signup};
+
+  function Restaurants() {
+      const [restaurants, setRestaurants] = useState([]);
+      useEffect(() => {
+          fetchRestaurants();
+      }, []); // Empty dependency array to ensure useEffect runs only once when the component mounts
+  
+      const fetchRestaurants = async () => {
+          try {
+              const response = await fetch("http://localhost:5000/restaurants");
+              if (!response.ok) {
+                  throw new Error('Failed to fetch restaurants');
+              }
+              const data = await response.json();
+              console.log(data);
+              setRestaurants(data);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      };
+  
+      return (
+          <div className='signinblock'>
+              <h1 className='Head ele-1'>Restaurants</h1>
+              <ul>
+                  {restaurants.map((restaurant, index) => (
+                      <p key={index}>{restaurant.username} - {restaurant.location}</p>
+                  ))}
+              </ul>
+          </div>
+      );
+  } 
+ export {Home,Login,Signup,Restaurants};
