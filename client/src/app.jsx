@@ -1,7 +1,7 @@
 // App.jsx
 import React from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
-import Page1 from './page1.jsx';
+import Page1 from './Signup/page1.jsx';
 
 function User(){
     const {username}=useParams();
