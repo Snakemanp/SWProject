@@ -7,15 +7,13 @@ import Navbar from './navbar.jsx';
 function Page1() {
   return (
     <>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/restuarants" element={<Restaurants />} />
-          <Route path="/signin" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
-      </BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="restuarants" element={<Restaurants />} />
+        <Route path="signin" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+      </Routes>
     </>
   );
 }
