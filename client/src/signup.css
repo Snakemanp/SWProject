@@ -1,0 +1,76 @@
+  .signinblock {
+    font-size: 20px;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-gap: 0px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    width: fit-content;
+    margin: 12vh auto;
+  }
+  .Home{
+    color: white;
+    text-align: center;
+    font-size:20px;
+    margin-top: 15vh;
+  }
+  .Head {
+    grid-column: 1 / -1; /* Span all columns */
+    margin-bottom: 20px; /* Example margin */
+  }
+  
+  .signup {
+    grid-column: 1/-1;;
+    display: grid;
+    grid-template-columns: auto 1fr; /* Two columns, first column width based on content */
+    grid-gap: 10px; /* Gap between grid items */
+    margin-bottom: 20px; /* Example margin */
+  }
+  .ele-6 {
+    grid-column: 1 / -1; /* Span all columns */
+    min-width: 200px;
+  }
+  .ele-7 {
+    grid-column: 1 / -1; /* Span all columns */
+    margin: auto;
+    justify-content: center;
+  }
+
+  .icon{
+    border-radius: 40px;
+    width: 80px;
+  }
+  
+  .restaurant-list{
+    font-size: 20px;
+    color: white;
+    display: grid;
+    grid-column: 1; /* Two columns */
+    grid-gap: 10px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    width: fit-content;
+    margin: 12vh auto;
+  }
+
+  .restaurant-ele{
+    display: grid;
+    grid-template-columns: 80px 50vh; /* Two columns */
+    grid-gap: 10px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    width: fit-content;
+    margin: auto;
+  }
+
+  .restaurant-ele div{
+    width: 50vh;
+  }
+
+  .link-button {
+    margin-top: 2vh;
+  }

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const {connectToDatabase} = require('./data')
+const {cloudinary}=require('./cloudimage')
 const app = express();
 const port = 5000;
 
@@ -24,6 +25,7 @@ app.post('/signup', async (req, res) => {
         return;
     }
     try {
+        requestData.url='https://th.bing.com/th/id/OIP.e35f-y2MkeVR4oDiXDG9vgHaHa?rs=1&pid=ImgDetMain';
         const result = await data.collection('accounts').insertOne(requestData);
         console.log('Inserted document with _id:', result.insertedId);
         res.json({ message: 'Data received successfully' });
@@ -65,3 +67,7 @@ app.get('/restaurants', async (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
+
+module.exports={
+    app,
+}
