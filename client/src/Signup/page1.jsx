@@ -1,5 +1,6 @@
 import React from 'react';
-import { Login, Home, Signup,Restaurants } from './Signup.jsx';
+import { Login, Home, Signup, Restaurants, Reset } from './Signup.jsx';
+import Bottom from './bottom.jsx'
 import { Routes, Route } from 'react-router-dom';
 import './index.css';
 
@@ -8,9 +9,10 @@ function Page1() {
     <>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="/restuarants" element={<Restaurants />} />
-        <Route path="/signin" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="restuarants" element={<Restaurants />} />
+        <Route path="signin" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path='reset' element={<Reset />} />
         <Route path='*' element={<h1 style={{color:'white'}}>Page Not Found</h1>} />
       </Routes>
     </>

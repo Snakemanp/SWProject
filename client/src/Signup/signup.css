@@ -74,3 +74,13 @@
   .link-button {
     margin-top: 2vh;
   }
+  .content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .content-main {
+    flex: 1; /* This allows the restaurant list to grow to fill remaining space */
+  }
+  

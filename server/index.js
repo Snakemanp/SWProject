@@ -1,4 +1,5 @@
 const express = require('express');
+const nodemailer = require('nodemailer')
 const cors = require('cors');
 const {connectToDatabase} = require('./data')
 const {cloudinary}=require('./cloudimage')
@@ -12,7 +13,17 @@ let data;
 connectToDatabase()
     .then(database=>{
         data=database;
-    })
+})
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+        user: 'chase.shields92@ethereal.email',
+        pass: 'QeRRMYM4v5BwSbhAZJ'
+    }
+});
+
 
 app.post('/signup', async (req, res) => {
     const requestData = req.body;
@@ -45,7 +56,7 @@ app.post('/signin', async (req, res) => {
         if (user && user.password === requestData.password) {
             res.json({ message: 'Signin successful' });
         } else {
-            res.status(401).json({ error: 'Unauthorized' });
+            res.status(401).json({ error: 'Unauthorized',message: 'Incorrect Username or Password'});
         }
     } catch (error) {
         console.error('Error querying document:', error);
@@ -60,6 +71,36 @@ app.get('/restaurants', async (req, res) => {
         res.json(restaurants);
     } catch (error) {
         console.error('Error querying restaurants:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/reset', async (req, res) => {
+    const requestData = req.body;
+    console.log(requestData);
+
+    try {
+        const user = await data.collection('accounts').findOne({ username: requestData.username });
+        if (user && user.email === requestData.email) {
+            try {
+                const info = await transporter.sendMail({
+                    from: 'chase.shields92@ethereal.email',
+                    to: user.email,
+                    subject: 'Password Recovery',
+                    text: `Your password is: ${user.password}`
+                });
+                
+                console.log('Email sent:', info.messageId);
+                res.status(200).json({ message: 'Password sent to your email' });
+            } catch (error) {
+                console.error('Error sending email:', error);
+                res.status(500).json({ error: 'Error sending email' });
+            }
+        } else {
+            res.status(401).json({ error: 'Unauthorized', message: 'Incorrect Username or Email' });
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
