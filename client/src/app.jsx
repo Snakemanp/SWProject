@@ -2,6 +2,7 @@
 import React from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 import Page1 from './Signup/page1.jsx';
+import Page2 from './Customer/page2.jsx';
 
 function User(){
     const {username}=useParams();
@@ -12,7 +13,7 @@ function App() {
   return (
       <Routes>
         <Route path="/*"  element={<Page1 />} />
-        <Route path="/user/:username" element={<User />} />
+        <Route path="/user/:username/*" element={<Page2 />} />
       </Routes>
   );
 }

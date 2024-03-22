@@ -1,10 +1,12 @@
-import React from 'react';
+import { React, useEffect } from 'react';
 import { Login, Home, Signup, Restaurants, Reset } from './Signup.jsx';
-import Bottom from './bottom.jsx'
 import { Routes, Route } from 'react-router-dom';
-import './index.css';
+import '../../styles/index.css';
 
 function Page1() {
+  useEffect(()=>{
+    document.getElementById('root').style.backgroundImage='url(../../4117465.jpg)';
+  },[])
   return (
     <>
       <Routes>

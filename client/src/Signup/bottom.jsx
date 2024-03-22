@@ -1,5 +1,5 @@
 import { FaPhone } from 'react-icons/fa';
-import './bottom.css'
+import '../../styles/bottom.css'
 function Bottom(){
     return(
         <div className='bottom'>

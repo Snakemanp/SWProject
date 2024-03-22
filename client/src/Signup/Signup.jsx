@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './navbar.jsx';
-import './signup.css'
 import Bottom from './bottom.jsx';
+import '../../styles/signup.css';
 
 function Login() {
     const [username, setUsername] = useState('');
