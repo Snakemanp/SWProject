@@ -11,7 +11,7 @@ function User(){
 function App() {
   return (
       <Routes>
-        <Route path="*" element={<Page1 />} />
+        <Route path="/*"  element={<Page1 />} />
         <Route path="/user/:username" element={<User />} />
       </Routes>
   );

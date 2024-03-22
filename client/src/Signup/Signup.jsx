@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Navbar from './navbar.jsx';
 import './signup.css'
+
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -30,6 +32,8 @@ function Login() {
     };
 
     return (
+        <>
+        <Navbar />
         <div className='signinblock'>
             <h1 className='Head ele-1'>SIGNIN</h1>
             <form className='grid-ele signup' >
@@ -45,11 +49,14 @@ function Login() {
                 <button>Signup</button>
             </Link>
         </div>
+        </>
     );
 }
 
 function Home(){
     return(
+        <>
+        <Navbar />
         <div className='Home'>
             <h1>Social Service Food Delivery System</h1>
             <p>Welcome to Social Service Food Delivery Site,<br/> Where you can order from our Restaurants.
@@ -58,6 +65,7 @@ function Home(){
                 <button className='link-button'>Signin</button>
             </Link>
         </div>
+        </>
     );
 }
 
@@ -94,6 +102,8 @@ function Signup() {
     };
   
     return (
+    <>
+    <Navbar />
       <div className='signinblock'>
         <h1 className='Head ele-1'>Sign Up</h1>
         <form onSubmit={handleSubmit} className ='signup'>
@@ -135,6 +145,7 @@ function Signup() {
             <button type="submit" className='grid-ele ele-7'>Sign Up</button>
         </form>
       </div>
+    </>
     );
   }
 
@@ -159,6 +170,8 @@ function Signup() {
       };
   
       return (
+        <>
+        <Navbar />
         <div className='restaurant-list'>
             <h1 className='Head ele-1'>Our Partnered Restaurants</h1>
             {restaurants.map((restaurant, index) => (
@@ -171,6 +184,7 @@ function Signup() {
                 </div>
             ))}
         </div>
+        </>
     );
     
   } 
