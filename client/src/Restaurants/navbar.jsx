@@ -15,6 +15,9 @@ const Navbar = () => {
         <Link to={`/Restaurants/${username}/orders`}>
           <button className='navele'>ORDERS</button>
         </Link>
+        <Link to={`/Restaurants/${username}/menu`}>
+          <button className='navele'>MENU</button>
+        </Link>
       </div>
       <div className='right'>
         <Link to={`/Restaurants/${username}/profile`}>

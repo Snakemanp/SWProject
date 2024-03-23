@@ -43,14 +43,14 @@ body, html,div,p,a {
     border-radius: 25px;
     text-decoration: none;
     width: auto;
-    background-color: rgb(24, 24, 24);
+    background-color:black;
   }
   .navele:hover{
     background-color: rgb(89, 89, 89);
   }
   
   #logo {
-    background-color:  rgb(24, 24, 24);
+    background-color: black;
     margin-right: 10px; /* Adjust margin */
     font-size: x-large;
     height: 50px;

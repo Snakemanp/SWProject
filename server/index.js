@@ -121,6 +121,94 @@ app.get('/user/:username', async (req, res) => {
     }
 });
 
+app.get('/Restaurants/:username/orders', async (req, res) => {
+    const { username } = req.params;
+    const day = new Date();
+    try {
+        const user = await data.collection('orders').findOne({ username: username });
+        if (user) {
+            // Check if user.orders is an object containing orders for each day
+            if (user.orders && typeof user.orders === 'object') {
+                const todayOrders = user.orders[day.getDate()];
+                if (todayOrders) {
+                    res.json(todayOrders);
+                } else {
+                    res.json({ error: 'No orders found for today' });
+                }
+            } else {
+                res.json({ error: 'Orders not found or invalid format' });
+            }
+        } else {
+            res.json({ error: 'User not found',date: day.getDate()});
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/Restaurants/:username/menu', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await data.collection('accounts').findOne({ username: username });
+        if (user) {
+            if (user.menu) {
+                const menu = user.menu;
+                res.json(menu);
+            } else {
+                res.json({ error: 'No Menu yet' });
+            }
+        } else {
+            res.json({ error: 'User not found',date: day.getDate()});
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/Restaurants/:username/menu/add', async (req, res) => {
+    const { username } = req.params;
+    const newItem = req.body;
+
+    try {
+        // Find the user document by username
+        const user = await data.collection('accounts').findOne({ username: username });
+
+        if (user) {
+            // If the menu field doesn't exist yet, create it as an empty object
+            if (!user.menu) {
+                user.menu = {};
+            }
+
+            // Use the Name field as the itemId
+            const itemId = newItem.Name;
+
+            // Add the new item to the menu object using the itemId as the key
+            user.menu[itemId] = {
+                url: newItem.url,
+                Description: newItem.description
+            };
+
+            // Update the user document in the database
+            await data.collection('accounts').updateOne(
+                { username },
+                { $set: { menu: user.menu } }
+            );
+
+            res.json({ message: 'Item added to menu successfully' });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+// Function to generate a unique itemId
+function generateItemId() {
+    return Math.random().toString(36).substring(2, 15);
+}
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
