@@ -18,15 +18,14 @@
   }
   .Head {
     grid-column: 1 / -1; /* Span all columns */
-    margin-bottom: 20px; /* Example margin */
+    margin-bottom: 10px; /* Example margin */
   }
-  
   .signup {
     grid-column: 1/-1;;
     display: grid;
     grid-template-columns: auto 1fr; /* Two columns, first column width based on content */
     grid-gap: 10px; /* Gap between grid items */
-    margin-bottom: 20px; /* Example margin */
+    margin-bottom: 10px; /* Example margin */
   }
   .ele-6 {
     grid-column: 1 / -1; /* Span all columns */
@@ -72,7 +71,7 @@
   }
 
   .link-button {
-    margin-top: 2vh;
+    margin-top: 1vh;
   }
   .content {
     display: flex;
@@ -80,7 +79,7 @@
     min-height: 100vh;
   }
   
-  .content-main {
-    flex: 1; /* This allows the restaurant list to grow to fill remaining space */
-  }
+  /*.content-main {
+    flex: 1;  This allows the restaurant list to grow to fill remaining space 
+  }*/
   

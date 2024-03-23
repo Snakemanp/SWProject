@@ -3,6 +3,7 @@ import React from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 import Page1 from './Signup/page1.jsx';
 import Page2 from './Customer/page2.jsx';
+import Page3 from './Restaurants/page3.jsx';
 
 function User(){
     const {username}=useParams();
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/*"  element={<Page1 />} />
         <Route path="/user/:username/*" element={<Page2 />} />
+        <Route path="/Restaurants/:username/*" element={<Page3 />} />
       </Routes>
   );
 }

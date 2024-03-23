@@ -24,7 +24,8 @@ function Login() {
             console.log(data.message);
             setResponseData(data.message);
             if (data.message === 'Signin successful') {
-                navigate(`/user/${username}`);
+                if(data.accounttype==='CUSTOMER') navigate(`/user/${username}`);
+                if(data.accounttype==='RESTAURANT') navigate(`/Restaurants/${username}`);
             }
         })
         .catch(error => {
@@ -39,9 +40,9 @@ function Login() {
             <h1 className='Head ele-1'>SIGNIN</h1>
             <form className='grid-ele signup' >
                 <label className='grid-ele ele-2' htmlFor="username1">Username</label>
-                <input className='grid-ele ele-3' id='username1' type='text' value={username} onChange={(e) => setUsername(e.target.value)}></input>
+                <input className='grid-ele ele-3' id='username1' type='text' style={{color:'black'}} value={username} onChange={(e) => setUsername(e.target.value)}></input>
                 <label className='grid-ele ele-4' htmlFor="password1">Password</label>
-                <input className='grid-ele ele-5' id='password1' type='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+                <input className='grid-ele ele-5' id='password1' type='password' style={{color:'black'}} value={password} onChange={(e) => setPassword(e.target.value)}></input>
             </form>
             <p id='message' className='grid-ele ele-6'>{ResponseData}</p>
             <button className='grid-ele ele-7' onClick={send}>Login</button>
@@ -114,6 +115,7 @@ function Signup() {
             <input
               type="text"
               value={username}
+              style={{color:'black'}}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
@@ -121,6 +123,7 @@ function Signup() {
             <input
               type="email"
               value={email}
+              style={{color:'black'}}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -128,6 +131,7 @@ function Signup() {
             <input
               type="password"
               value={password}
+              style={{color:'black'}}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -135,6 +139,7 @@ function Signup() {
             <input
               type="text"
               value={location}
+              style={{color:'black'}}
               onChange={(e) => setLocation(e.target.value)}
               required
             />
@@ -229,6 +234,7 @@ function Signup() {
                 <p id='message' className='grid-ele ele-6'>{responseData}</p>
                 <button className='grid-ele ele-7' onClick={send}>Recover</button>
             </div>
+            <Bottom />
         </>
     );
 }

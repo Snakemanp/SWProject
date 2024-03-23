@@ -1,0 +1,37 @@
+.prof-image-buton{
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    padding: 0%;
+}
+.prof-image{
+    width: 150px;
+    border-radius: 75px;
+    grid-row: 1;
+    padding: 0%;
+}
+.Profile-block{
+    display: grid;
+    grid-template-columns: 30vw 60vw;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+}
+#Profile{
+    columns: 1,2;
+}
+#order-history{
+    columns: 2,3;
+    text-align: center;
+}
+.base-ele{
+    grid-column: 1 / -1;;
+}
+.profileblock{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+    font-size: large;
+}

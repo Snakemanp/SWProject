@@ -54,7 +54,7 @@ app.post('/signin', async (req, res) => {
     try {
         const user = await data.collection('accounts').findOne({ username: requestData.username });
         if (user && user.password === requestData.password) {
-            res.json({ message: 'Signin successful' });
+            res.json({ message: 'Signin successful', accounttype: user.userType });
         } else {
             res.status(401).json({ error: 'Unauthorized',message: 'Incorrect Username or Password'});
         }
@@ -105,10 +105,25 @@ app.post('/reset', async (req, res) => {
     }
 });
 
+app.get('/user/:username', async (req, res) => {
+    const {username} = req.params;
+    // Example: Query data from a MongoDB collection
+    try {
+        const user = await data.collection('accounts').findOne({ username: username });
+        if (user ) {
+            res.json(user);
+        } else {
+            res.status(401).json({ error: 'Unauthorized',message: 'Unauthorized'});
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
-module.exports={
-    app,
-}
+module.exports=app;

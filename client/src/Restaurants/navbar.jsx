@@ -9,15 +9,15 @@ const Navbar = () => {
     <nav className='Navbar'>
       <div className='left'>
         <button className='navele' id='logo'>SSFDS</button>
-        <Link to={`/user/${username}/`}>
+        <Link to={`/Restaurants/${username}/`}>
           <button className='navele'>HOME</button>
         </Link>
-        <Link to={`/user/${username}/restuarants`}>
-          <button className='navele'>RESTAURANTS</button>
+        <Link to={`/Restaurants/${username}/orders`}>
+          <button className='navele'>ORDERS</button>
         </Link>
       </div>
       <div className='right'>
-        <Link to={`/user/${username}/profile`}>
+        <Link to={`/Restaurants/${username}/profile`}>
           <button className='navele'>PROFILE</button>
         </Link>
         <Link to='/'>
