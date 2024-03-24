@@ -154,7 +154,29 @@ app.get('/Restaurants/:username/menu', async (req, res) => {
         if (user) {
             if (user.menu) {
                 const menu = user.menu;
-                res.json(menu);
+                res.json({menu:menu});
+            } else {
+                res.json({ error: 'No Menu yet' });
+            }
+        } else {
+            res.json({ error: 'User not found',date: day.getDate()});
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/Restaurants/:username/menu/:itemname', async (req, res) => {
+    const { username,itemname } = req.params;
+    try {
+        const user = await data.collection('accounts').findOne({ username: username });
+        if (user) {
+            if (user.menu) {
+                if(itemname){
+                    const item=user.menu[itemname];
+                    res.json({item:item});
+                }
             } else {
                 res.json({ error: 'No Menu yet' });
             }
@@ -187,7 +209,9 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
             // Add the new item to the menu object using the itemId as the key
             user.menu[itemId] = {
                 url: newItem.url,
-                Description: newItem.description
+                Description: newItem.description,
+                count: newItem.count,
+                price: newItem.price
             };
 
             // Update the user document in the database
@@ -205,10 +229,25 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Function to generate a unique itemId
-function generateItemId() {
-    return Math.random().toString(36).substring(2, 15);
-}
+
+app.post('/Restaurants/menu/delete',async(req,res)=>{
+    const requestData = req.body;
+    try {
+        const user = await data.collection('accounts').findOne({ username: requestData.username });
+        if (user) {
+            delete user.menu[requestData.itemname];
+            await data.collection('accounts').updateOne(
+                { username: requestData.username },
+                { $set: { menu: user.menu } }
+            );
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

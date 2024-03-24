@@ -1,0 +1,23 @@
+.item-content{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    justify-content: center;
+    text-align: left;
+    margin-left: 2%;;
+}
+.item{
+    display: flex;
+    justify-content:space-between;
+    width: 80%;
+    margin: 10px auto;
+    background-color: rgb(59, 81, 81);
+}
+.item-button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    margin-right: 10px;
+}

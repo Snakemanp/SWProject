@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './navbar.jsx';
 import Bottom from '../Signup/bottom.jsx'
 import '../../styles/signup.css'
+import '../../styles/restaurents.css'
 
 function Home(){
     const [greeting, setGreeting] = useState('');
@@ -52,32 +53,50 @@ function Orders(){
 function Menu(){
     const {username} = useParams();
     const [menu,setmenu]= useState({});
+    const navigate=useNavigate();
     useEffect(()=>{
         fetch(`http://localhost:5000/Restaurants/${username}/menu`)
         .then(response=>response.json())
         .then(data=>{
-            if(data) setmenu(data);
-
+            if(data.menu) setmenu(data.menu);
         })
         .catch(error => {
             console.error('Error fetching menu:', error);
         });
-    },[]);
+    },[menu,deleteitem]);
+    function deleteitem(itemname){
+        const data={
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, itemname })
+        };
+        fetch('http://localhost:5000/Restaurants/menu/delete',data)
+    }
     return (
-        <div className='content' style={{color:'white'}}>
+        <div className='content' style={{color:'white',textAlign:'center'}}>
             <Navbar />
-            <h2>Menu</h2>
+            <h1 style={{fontSize:'50px'}}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
-                    <li key={itemName}>
-                        <img src={menu[itemName].url} alt={itemName} style={{width:'100px',height:'100px'}}/>
-                        <span>{itemName}</span>
-                        <span>{menu[itemName].Description}</span>
-                    </li>
+                    <div key={itemName} className='item'>
+                        <img src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
+                        <div className='item-content'>
+                        <h2>{itemName}</h2>
+                        <h4>{menu[itemName].Description}</h4>
+                        <p>Price:{menu[itemName].price}</p>
+                        <p>Plate count:{menu[itemName].count}</p>
+                        </div>
+                        <div className='item-button'>
+                        <button onClick={()=>{deleteitem(itemName)}}>Delete Item</button>
+                        <button onClick={()=>{navigate(`/Restaurants/${username}/menu/${itemName}/edit`)}}>Edit Item</button>
+                        </div>
+                    </div>
                 ))}
             </ul>
             <Link to={'add'}>
-                <button>Add Item</button>
+                <button style={{marginBottom:'20px'}}>Add Item</button>
             </Link>
             <Bottom />
         </div>
@@ -88,31 +107,35 @@ function Addmenu(){
     const [Name,setName]=useState('');
     const [url,seturl] = useState('https://res.cloudinary.com/djwc9jftg/image/upload/v1710950611/samples/breakfast.jpg');
     const [description,setdescription]=useState('');
+    const [price,setprice]=useState(0);
+    const [count,setcount]=useState(0);
     const {username} = useParams();
     const [ResponseData,setResponseData]=useState('');
     const navigate = useNavigate();
 
-    const send = () => {
-        console.log('clicked');
+    const send = (e) => {
+        e.preventDefault();
+
         const data = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ Name, url, description })
+            body: JSON.stringify({ Name, url, description, count, price })
         };
-        fetch(`http://localhost:5000/Restaurants/${username}/menu/add`,data)
-        .then(response => response.json())
-        .then(data => {
-            setResponseData(data.message);
-            if (data.message === 'Item added to menu successfully') {
-                navigate(`/Restaurants/${username}/menu`);
-            }
-            setResponseData(data.error);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
+
+        fetch(`http://localhost:5000/Restaurants/${username}/menu/add`, data)
+            .then(response => response.json())
+            .then(data => {
+                setResponseData(data.message);
+                if (data.message === 'Item added to menu successfully') {
+                    navigate(`/Restaurants/${username}/menu`);
+                }
+                setResponseData(data.error);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
     };
 
     return(
@@ -120,17 +143,144 @@ function Addmenu(){
         <Navbar />
         <div className='signinblock content-main'>
             <h1 className='Head ele-1'>ADD ITEM</h1>
-            <form className='grid-ele signup' >
-                <label className='grid-ele ele-2' htmlFor="Name">Item Name</label>
-                <input className='grid-ele ele-3' id='Name' type='text' style={{color:'black'}} value={Name} onChange={(e) => setName(e.target.value)}></input>
-                <label className='grid-ele ele-4' htmlFor="Description">Description</label>
-                <input className='grid-ele ele-5' id='Description' type='text' style={{color:'black'}} value={description} onChange={(e) => setdescription(e.target.value)}></input>
-            </form>
-            <p id='message' className='grid-ele ele-6'>{ResponseData}</p>
-            <button className='grid-ele ele-7' onClick={send}>Add Item</button>
+            <form onSubmit={send} className ='signup'>
+            <label>Item Name</label>
+            <input
+              type="text"
+              value={Name}
+              style={{color:'black'}}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <label>Description</label>
+            <input
+              type="text"
+              value={description}
+              style={{color:'black'}}
+              onChange={(e) => setdescription(e.target.value)}
+            />
+            <label>Price</label>
+            <input
+              type="number"
+              value={price}
+              style={{color:'black'}}
+              onChange={(e) => setprice(e.target.value)}
+            />
+            <label>Plate Count</label>
+            <input
+              type="number"
+              value={count}
+              style={{color:'black'}}
+              onChange={(e) => setcount(e.target.value)}
+            />
+            <p className='grid-ele ele-7'>{ResponseData}</p>
+            <button type="submit" className='grid-ele ele-7'>Add Item</button>
+        </form>
         </div>
         <Bottom />
+    </div>
+)};
+
+function Edititem() {
+    const { username, itemname } = useParams();
+    const [url, setUrl] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState(0);
+    const [count, setCount] = useState(0);
+    const navigate=useNavigate();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/Restaurants/${username}/menu/${itemname}`)
+                .then(response=>response.json())
+                .then(data=>{
+                    if (data.item) {
+                        const { url, Description, price, count } = data.item;
+                        setUrl(url);
+                        setDescription(Description);
+                        setPrice(price);
+                        setCount(count);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching item data:', error);
+            }
+        };
+
+        fetchData();
+    }, [username, itemname]);
+
+    const updateItem = () => {
+        const Name=itemname;
+        const data = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Name, description, price, count, url })
+        };
+
+        fetch(`http://localhost:5000/Restaurants/${username}/menu/add`, data)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'Item added to menu successfully') {
+                    navigate(`/Restaurants/${username}/menu`);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating item:', error);
+            });
+    };
+    
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setUrl(imageUrl);
+            // You can upload the file to the server here if needed
+        }
+    };
+
+    return (
+        <div className='content'>
+            <Navbar />
+            <div className='signinblock content-main'>
+            <h1 className='Head'>Edit Item: {itemname}</h1>
+            <input
+                type="file"
+                accept="image/*"
+                id="fileInput"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+            />
+            <label htmlFor="fileInput" className='base-ele prof-image-button'>
+                <img src={url} alt='Image' style={{height:'100px'}} />
+            </label>
+            <label>Description</label>
+            <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+            />
+            <label>Price</label>
+            <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+            />
+            <label>Count</label>
+            <input
+                type="number"
+                value={count}
+                onChange={(e) => setCount(e.target.value)}
+            />
+            <button className='ele-7' onClick={updateItem}>Update Item</button>
+            </div>
+        <Bottom />
         </div>
-    )
+    );
 }
-export {Home,Orders,Menu,Addmenu};
+
+export {Home,Orders,Menu,Addmenu,Edititem};

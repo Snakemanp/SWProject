@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Home, Orders, Menu, Addmenu } from './restaurants';
+import { Home, Orders, Menu, Addmenu, Edititem } from './restaurants';
 import Navbar from './navbar';
 
 function Page3() {
@@ -14,6 +14,7 @@ function Page3() {
         <Route path="orders" element={<Orders />} />
         <Route path="menu" element={<Menu />} />
         <Route path="menu/add" element={<Addmenu />} />
+        <Route path="menu/:itemname/edit" element={<Edititem />} />
         <Route path="profile" element={<><Navbar /><h1 style={{color:'blue'}}>Profile</h1></>} />
         <Route path='*' element={<h1 style={{color:'blue'}}>Page Not Found</h1>} />
       </Routes>
