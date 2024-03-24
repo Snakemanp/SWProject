@@ -35,3 +35,11 @@
     justify-items: center;
     font-size: large;
 }
+
+.item-user{
+    display: flex;
+    justify-content:space-between;
+    width: 80%;
+    margin: 10px auto;
+    background-color: hsl(201, 81%, 75%);
+}

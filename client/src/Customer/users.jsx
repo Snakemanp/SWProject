@@ -7,7 +7,6 @@ import '../../styles/signup.css'
 
 function Home(){
     const [greeting, setGreeting] = useState('');
-    const { username } = useParams();
 
   useEffect(() => {
     const date = new Date();
@@ -38,6 +37,53 @@ function Home(){
         </div>
     );
 }
+
+function Restaurants(){
+    const { username } = useParams();
+    const [restaurants, setRestaurants] = useState([]);
+      useEffect(() => {
+          fetchRestaurants();
+      }, []); // Empty dependency array to ensure useEffect runs only once when the component mounts
+  
+      const fetchRestaurants = async () => {
+          try {
+              const response = await fetch(`http://localhost:5000/user/restaurants?user=${username}`);
+              if (!response.ok) {
+                  throw new Error('Failed to fetch restaurants');
+              }
+              const data = await response.json();
+              console.log(data);
+              setRestaurants(data);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      };
+  
+    return (
+        <>
+        <div className='content' style={{color:'black',textAlign:'center'}}>
+        <Navbar />
+        <h1 className='Head ele-1'>Restaurants Near You</h1>
+        <ul>
+            {restaurants.map((restaurant, index) => (
+                <div key={index} className='item-user'>
+                    <img src={restaurant.url} alt={restaurant.username} style={{width:'100px'/*,height:'100px'*/}}/>
+                    <div className='item-content'>
+                    <h1>{restaurant.username}</h1>
+                    <h3>{restaurant.location}</h3>
+                    </div>
+                    <div className='item-button'>
+                    <button onClick={()=>{}}>Order Food</button>
+                    </div>
+                </div>
+            ))}
+        </ul>
+        <Bottom />
+        </div>
+    </>
+    )
+};
+
 function Profile({setcurview}){
     const { username } = useParams();
     const [profile,setprofile] = useState({});
@@ -127,4 +173,4 @@ function User() {
     );
 }
 
-export {Home,User};
+export {Home,User,Restaurants};

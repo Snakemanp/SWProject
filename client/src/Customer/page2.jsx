@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import {Home, User } from './users.jsx';
+import {Home, User, Restaurants } from './users.jsx';
 import { Routes, Route } from 'react-router-dom';
 
 function Page2() {
@@ -11,7 +11,7 @@ function Page2() {
     <>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="restuarants" element={<h1 style={{color:'blue'}}>Restaurants List</h1>} />
+        <Route path="restuarants" element={<Restaurants />} />
         <Route path="profile" element={<User />} />
         <Route path='*' element={<h1 style={{color:'blue'}}>Page Not Found</h1>} />
       </Routes>

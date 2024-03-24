@@ -1,15 +1,36 @@
 const express = require('express');
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 const cors = require('cors');
-const {connectToDatabase} = require('./data')
-const {cloudinary}=require('./cloudimage')
-const app = express();
-const port = 5000;
+const { connectToDatabase } = require('./data');
+const { cloudinary } = require('./cloudimage');
+const axios = require('axios');
+const opencage = require('opencage-api-client');
+const { getDistance } = require('geolib');
 
-// Enable CORS for all routes
+const port = 5000;
+let data;
+const app = express();
 app.use(cors());
 app.use(express.json());
-let data;
+
+// Function to get coordinates for a given address
+async function getCoordinates(address) {
+    try {
+        const data = await opencage.geocode({ q: address });
+        if (data.status.code === 200 && data.results.length > 0) {
+            const place = data.results[0];
+            const coordinates = place.geometry;
+            return coordinates;
+        } else {
+            console.log('Error: Unable to fetch coordinates');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+        return null;
+    }
+}
+
 connectToDatabase()
     .then(database=>{
         data=database;
@@ -24,10 +45,8 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
 app.post('/signup', async (req, res) => {
     const requestData = req.body;
-    console.log(requestData);
     
     // Example: Insert data into a MongoDB collection
     if(await data.collection('accounts').findOne({ username: requestData.username })){
@@ -37,6 +56,12 @@ app.post('/signup', async (req, res) => {
     }
     try {
         requestData.url='https://th.bing.com/th/id/OIP.e35f-y2MkeVR4oDiXDG9vgHaHa?rs=1&pid=ImgDetMain';
+        const coordinates = await getCoordinates(requestData.location);
+        if (!coordinates) {
+            return res.status(500).json({ error: 'Error fetching coordinates' });
+        }
+        requestData.geometry = coordinates;
+        console.log(requestData);
         const result = await data.collection('accounts').insertOne(requestData);
         console.log('Inserted document with _id:', result.insertedId);
         res.json({ message: 'Data received successfully' });
@@ -74,6 +99,45 @@ app.get('/restaurants', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.get('/user/restaurants', async (req, res) => {
+    const { user } = req.query;
+    try {
+        const userData = await data.collection('accounts').findOne({ username: user });
+        if (!userData || !userData.geometry) {
+            return res.status(400).json({ error: 'User or user location not found' });
+        }
+        const userLocation = userData.geometry;
+
+        // Get all restaurants from the database
+        const restaurants = await data.collection('accounts').find({ userType: 'RESTAURANT' }).toArray();
+
+        // Filter restaurants within 10km radius
+        const nearbyRestaurants = restaurants.filter(restaurant => {
+            if (!restaurant.geometry) {
+                return false; // Skip restaurants with missing or undefined geometry
+            }
+            const restaurantLocation = restaurant.geometry;
+            const distance = getDistance(userLocation, restaurantLocation);
+            const distanceInKm = distance / 1000; // Convert meters to kilometers
+            return distanceInKm <= 10;
+        });
+
+        // Map the restaurants to include only necessary fields and check if menu exists
+        const formattedRestaurants = nearbyRestaurants.map(restaurant => ({
+            username: restaurant.username,
+            url: restaurant.url,
+            location: restaurant.location,
+            //menu: restaurant.menu ? restaurant.menu : null // Check if menu exists
+        }));
+        
+        res.json(formattedRestaurants);
+    } catch (error) {
+        console.error('Error querying restaurants:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 app.post('/reset', async (req, res) => {
     const requestData = req.body;
