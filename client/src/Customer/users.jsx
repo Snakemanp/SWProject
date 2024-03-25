@@ -40,6 +40,7 @@ function Home(){
 
 function Restaurants(){
     const { username } = useParams();
+    const navigate=useNavigate();
     const [restaurants, setRestaurants] = useState([]);
       useEffect(() => {
           fetchRestaurants();
@@ -52,7 +53,6 @@ function Restaurants(){
                   throw new Error('Failed to fetch restaurants');
               }
               const data = await response.json();
-              console.log(data);
               setRestaurants(data);
           } catch (error) {
               console.error('Error fetching data:', error);
@@ -73,7 +73,7 @@ function Restaurants(){
                     <h3>{restaurant.location}</h3>
                     </div>
                     <div className='item-button'>
-                    <button onClick={()=>{}}>Order Food</button>
+                    <button onClick={()=>{navigate(`/user/${username}/${restaurant.username}/menu`)}}>Order Food</button>
                     </div>
                 </div>
             ))}
@@ -83,6 +83,74 @@ function Restaurants(){
     </>
     )
 };
+
+function Ordermenu({cart,setCart}){
+    const { restaurant } = useParams();
+    const [menu,setmenu]=useState({});
+    const [count,setCount]=useState(0);
+    useEffect(()=>{
+        fetch(`http://localhost:5000/Restaurants/${restaurant}/menu`)
+        .then(response=>response.json())
+        .then(data=>{
+            if(data.menu) setmenu(data.menu);
+        })
+        .catch(error => {
+            console.error('Error fetching menu:', error);
+        });
+    },[]);
+    function addtocart(itemname,max){
+        const existingItemIndex = cart.findIndex(item => item.item === itemname && item.restaurant === restaurant);
+        if (existingItemIndex != -1) {
+            const datac=count;
+            setCount(parseInt(datac) + parseInt(cart[existingItemIndex].count));
+            console.log(count)
+        }
+        if(parseInt(count)>parseInt(max)) {alert('Ordered Plates are more tham available plates')}
+        else{
+            if (existingItemIndex !== -1) {
+                // If item already exists in cart, update its count
+                setCart(prevCart => {
+                  const updatedCart = [...prevCart];
+                  updatedCart[existingItemIndex].count = count;
+                  console.log(updatedCart);
+                  return updatedCart;
+                });
+              } else {
+                // If item doesn't exist in cart, add it
+                const data = { restaurant: restaurant, item: itemname, count: count };
+                setCart(prevCart => {
+                  const tempcart = [...prevCart, data];
+                  console.log(tempcart);
+                  return tempcart;
+                });
+              }
+        }
+    }
+    return(
+        <div className='content' style={{color:'white',textAlign:'center'}}>
+            <Navbar />
+            <h1 style={{fontSize:'50px'}}>Menu</h1>
+            <ul>
+                {Object.keys(menu).map(itemName => (
+                    <div key={itemName} className='item-user'>
+                        <img src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
+                        <div className='item-content'>
+                        <h2>{itemName}</h2>
+                        <h4>{menu[itemName].Description}</h4>
+                        <p>Price:{menu[itemName].price}</p>
+                        <p>Plate count:{menu[itemName].count}</p>
+                        </div>
+                        <div className='item-button-user'>
+                        <input type="number" min={0} max={menu[itemName].count} style={{width:'8vw'}} onChange={(e) => setCount(parseInt(e.target.value))}/>
+                        <button onClick={()=>{addtocart(itemName,menu[itemName].count)}}>Save Changes</button>
+                        </div>
+                    </div>
+                ))}
+            </ul>
+            <Bottom />
+            </div>
+    )
+}
 
 function Profile({setcurview}){
     const { username } = useParams();
@@ -104,39 +172,109 @@ function Profile({setcurview}){
         fetchData();
     }, [profile]);
     return(
+        <>
+        <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
         <div className='profileblock' style={{color:'black'}}>
             <img src={profile.url} alt='Image' className='base-ele prof-image'/>
-            <h4 className='base-ele'>{profile.username}</h4>
+            <h2 className='base-ele'>{profile.username}</h2>
+            <p className='profile-p'>EMAIL</p><p className='profile-p'>{profile.email}</p>
+            <p className='profile-p'>LOCATION</p><div className='profile-p'>{profile.location}</div>
+            <p className='profile-p'>ACCOUNT TYPE</p><p className='profile-p'>{profile.userType}</p>
+            
             <button className='base-ele' onClick={()=>setcurview('Setprofile')}>Edit Profile</button>
         </div>
+        </>
     )
 }
-function Setprofile({setcurview}){
+
+function Setprofile() {
     const { username } = useParams();
-    const [profile,setprofile] = useState({});
+    const [profile, setProfile] = useState({
+        username: '',
+        email: '',
+        location: ''
+    });
+
+    // Fetch user profile data from the backend
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchProfile = async () => {
             try {
                 const response = await fetch(`http://localhost:5000/user/${username}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                const data = await response.json();
-                setprofile(data);
+                const profileData = await response.json();
+                setProfile(profileData);
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }
         };
 
-        fetchData();
+        fetchProfile();
+    }, []);
+
+    const [newPassword, setNewPassword] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newLocation, setNewLocation] = useState('');
+    const [newUrl,setNewUrl]=useState('');
+    useEffect(() => {
+        setNewPassword(profile.password || '');
+        setNewEmail(profile.email || '');
+        setNewLocation(profile.location || '');
+        setNewUrl(profile.url);
     }, [profile]);
+
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/user/${username}/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    password: newPassword || profile.password, // Use existing value if not changed
+                    email: newEmail || profile.email,
+                    location: newLocation || profile.location,
+                    url: newUrl||profile.url
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update profile');
+            } 
+
+            // Handle success
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        }
+    };
     const handleFileChange = (event) => {
+        alert('Please Wait,It takes some time to update image .Please donot refresh');
         const file = event.target.files[0];
-        // Do something with the selected file, like upload it
+        const formData = new FormData();
+        formData.append('image', file);
+        fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.url){
+            const uploadedUrl = data.url;
+            setNewUrl(uploadedUrl);
+            }
+            else{
+                error('Error in uploading image');
+            }
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+        });
       };
-    return(
+
+    return (
         <div className='profileblock' style={{color:'black'}}>
-            <input
+             <input
                 type="file"
                 accept="image/*"
                 id="fileInput"
@@ -144,20 +282,44 @@ function Setprofile({setcurview}){
                 onChange={handleFileChange}
             />
             <label htmlFor="fileInput" className='base-ele prof-image-button'>
-                <img src={profile.url} alt='Image' className='base-ele prof-image' />
+                <img src={newUrl} alt='Image' className='base-ele prof-image' />
             </label>
-            <h4 className='base-ele'>{profile.username}</h4>
-            <p><span>Email:</span></p><p>{profile.email}</p>
-            <p><span>Location:</span></p><p>{profile.location}</p>
-            <button className='base-ele' onClick={()=>setcurview('Profile')}>Save</button>
+            <h2 className='base-ele'>{username}</h2>
+            <form onSubmit={handleSubmit} className ='signup'>
+            <label>PASSWORD</label>
+            <input
+                type="password"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <label>EMAILID</label>
+            <input
+                type="email"
+                placeholder="New Email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+            />
+            <label>
+            LOCATION
+            </label>
+            <input
+                type="text"
+                placeholder="New Location"
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+            />
+            <button className='base-ele' >Update Profile</button>
+            </form>
         </div>
-    )
+    );
 }
+
 function User() {
     const [curview, setcurview] = useState('Profile');
 
     return (
-        <div className='content'>
+        <div className='content' style={{alignItems:'stretch'}}>
             <Navbar />
             <div className='Profile-block'>
                 <div id='Profile'>
@@ -173,4 +335,4 @@ function User() {
     );
 }
 
-export {Home,User,Restaurants};
+export {Home,User,Restaurants,Ordermenu};

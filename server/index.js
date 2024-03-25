@@ -2,8 +2,9 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const { connectToDatabase } = require('./data');
-const { cloudinary } = require('./cloudimage');
+const { uploadimg } = require('./cloudimage');
 const axios = require('axios');
+const multer = require('multer');
 const opencage = require('opencage-api-client');
 const { getDistance } = require('geolib');
 
@@ -12,6 +13,7 @@ let data;
 const app = express();
 app.use(cors());
 app.use(express.json());
+const upload = multer({ dest: 'uploads/' });
 
 // Function to get coordinates for a given address
 async function getCoordinates(address) {
@@ -128,12 +130,37 @@ app.get('/user/restaurants', async (req, res) => {
             username: restaurant.username,
             url: restaurant.url,
             location: restaurant.location,
-            //menu: restaurant.menu ? restaurant.menu : null // Check if menu exists
+            menu: restaurant.menu ? restaurant.menu : null // Check if menu exists
         }));
         
         res.json(formattedRestaurants);
     } catch (error) {
         console.error('Error querying restaurants:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.put('/user/:username/update', async (req, res) => {
+    const { username } = req.params;
+    const updatedData = req.body;
+
+    try {
+        // Find the user document by username
+        const user = await data.collection('accounts').findOne({ username: username });
+
+        if (user) {
+            // Update the user document with the new data
+            await data.collection('accounts').updateOne(
+                { username },
+                { $set: updatedData }
+            );
+
+            res.json({ message: 'Profile updated successfully' });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -309,6 +336,24 @@ app.post('/Restaurants/menu/delete',async(req,res)=>{
         }
     } catch (error) {
         console.error('Error querying document:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+    try {
+        // Check if file is present in request
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        console.log('Uploaded file:', req.file.path);
+        const result = await uploadimg(req.file.path);
+
+        // Return the URL to the frontend
+        console.log(result);
+        res.json({ url: result });
+    } catch (error) {
+        console.error('Error uploading file:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

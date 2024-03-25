@@ -235,13 +235,28 @@ function Edititem() {
     };
     
     const handleFileChange = (event) => {
+        alert('Please Wait,It takes some time to update image .Please donot refresh');
         const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setUrl(imageUrl);
-            // You can upload the file to the server here if needed
-        }
-    };
+        const formData = new FormData();
+        formData.append('image', file);
+        fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.url){
+            const uploadedUrl = data.url;
+            setUrl(uploadedUrl);
+            }
+            else{
+                error('Error in uploading image');
+            }
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+        });
+      };
 
     return (
         <div className='content'>

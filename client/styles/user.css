@@ -1,38 +1,43 @@
 .prof-image-buton{
-    width: 150px;
-    height: 150px;
-    border-radius: 75px;
+    width: 12vw;
+    height: 12vw;
+    border-radius: 6vw;
     padding: 0%;
 }
 .prof-image{
-    width: 150px;
-    border-radius: 75px;
+    width: 12vw;
+    height: 12vw;
+    border-radius: 6vw;
+    object-fit: cover;
     grid-row: 1;
     padding: 0%;
 }
 .Profile-block{
     display: grid;
     grid-template-columns: 30vw 60vw;
-    width: fit-content;
-    height: fit-content;
+    align-items: stretch;
+    grid-gap: 2vw;
     margin: auto;
 }
 #Profile{
     columns: 1,2;
+    align-items: stretch;
 }
 #order-history{
     columns: 2,3;
     text-align: center;
+    align-items: stretch;
 }
 .base-ele{
-    grid-column: 1 / -1;;
+    grid-column: 1 / -1;
+    margin: auto;
 }
 .profileblock{
     display: grid;
     grid-template-columns: 30% 70%;
     text-align: center;
-    align-items: center;
-    justify-items: center;
+    align-items: stretch;
+    grid-row: auto;
     font-size: large;
 }
 
@@ -42,4 +47,21 @@
     width: 80%;
     margin: 10px auto;
     background-color: hsl(201, 81%, 75%);
+}
+
+.item-button-user{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.profile-p{
+    width: auto;
+    height: auto;
+    white-space: 'wrap';
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
