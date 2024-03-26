@@ -65,3 +65,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.price {
+    display: inline-block;
+  }
+  
+  .original-price {
+    color: red;
+    text-decoration: line-through;
+  }
+  
+  .discounted-price {
+    color: blue; /* or any color for the discounted price */
+  }

@@ -358,6 +358,14 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     }
 });
 
+app.get('/dist',(req,res)=>{
+    const { user1,user2 } = req.query;
+    const u1=data.collection('accounts').findOne({ username: user1 });
+    const u2=data.collection('accounts').findOne({ username: user2 });
+    let distance=getDistance(u1.geometry,u2.geometry);
+    res.json({distance:distance});
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });

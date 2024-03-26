@@ -98,32 +98,30 @@ function Ordermenu({cart,setCart}){
             console.error('Error fetching menu:', error);
         });
     },[]);
-    function addtocart(itemname,max){
+    function addtocart(itemname, max, price, url) {
         const existingItemIndex = cart.findIndex(item => item.item === itemname && item.restaurant === restaurant);
-        if (existingItemIndex != -1) {
-            const datac=count;
-            setCount(parseInt(datac) + parseInt(cart[existingItemIndex].count));
-            console.log(count)
-        }
-        if(parseInt(count)>parseInt(max)) {alert('Ordered Plates are more tham available plates')}
-        else{
-            if (existingItemIndex !== -1) {
-                // If item already exists in cart, update its count
-                setCart(prevCart => {
-                  const updatedCart = [...prevCart];
-                  updatedCart[existingItemIndex].count = count;
-                  console.log(updatedCart);
-                  return updatedCart;
-                });
-              } else {
-                // If item doesn't exist in cart, add it
-                const data = { restaurant: restaurant, item: itemname, count: count };
-                setCart(prevCart => {
-                  const tempcart = [...prevCart, data];
-                  console.log(tempcart);
-                  return tempcart;
-                });
-              }
+        let datac = 0;
+        if (existingItemIndex !== -1) {
+            datac = parseInt(count) + parseInt(cart[existingItemIndex].count);
+            if (datac > parseInt(max)) {
+                alert('Ordered Plates are more than available plates');
+                return;
+            }
+            // If item already exists in cart, update its count
+            setCart(prevCart => {
+                const updatedCart = [...prevCart];
+                updatedCart[existingItemIndex].count = datac;
+                console.log(updatedCart);
+                return updatedCart;
+            });
+        } else {
+            // If item doesn't exist in cart, add it
+            const data = { restaurant: restaurant, item: itemname, count: count, price: price, url: url };
+            setCart(prevCart => {
+                const tempcart = [...prevCart, data];
+                console.log(tempcart);
+                return tempcart;
+            });
         }
     }
     return(
@@ -133,20 +131,25 @@ function Ordermenu({cart,setCart}){
             <ul>
                 {Object.keys(menu).map(itemName => (
                     <div key={itemName} className='item-user'>
-                        <img src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
+                        <img className='item-image' src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
                         <div className='item-content'>
                         <h2>{itemName}</h2>
                         <h4>{menu[itemName].Description}</h4>
-                        <p>Price:{menu[itemName].price}</p>
+                        <div className="price">
+                            <span>Price:</span>
+                            <span className="original-price">{menu[itemName].price}</span>
+                            <span className="discounted-price">{parseFloat(menu[itemName].price)*0.8}</span>
+                        </div>
                         <p>Plate count:{menu[itemName].count}</p>
                         </div>
                         <div className='item-button-user'>
-                        <input type="number" min={0} max={menu[itemName].count} style={{width:'8vw'}} onChange={(e) => setCount(parseInt(e.target.value))}/>
-                        <button onClick={()=>{addtocart(itemName,menu[itemName].count)}}>Save Changes</button>
+                        <input type="number" min={1} max={menu[itemName].count} style={{width:'8vw'}} onChange={(e) => setCount(parseInt(e.target.value))}/>
+                        <button onClick={()=>{addtocart(itemName,menu[itemName].count,parseFloat(menu[itemName].price)*0.8,menu[itemName].url)}}>Save Changes</button>
                         </div>
                     </div>
                 ))}
             </ul>
+            <button onClick={()=>{setCart([])}} style={{margin:'auto'}}>Clear Cart</button>
             <Bottom />
             </div>
     )
@@ -335,4 +338,56 @@ function User() {
     );
 }
 
-export {Home,User,Restaurants,Ordermenu};
+function Cart({ cart, setCart }) {
+    const { username } = useParams();
+    const calculateTotalCost = () => {
+        let total = 0;
+        cart.forEach(item => {
+            total += parseFloat(item.price) * item.count;
+        });
+        return total;
+    };
+
+    // Function to remove an item from the cart
+    const removeFromCart = (index) => {
+        setCart(prevCart => {
+            const updatedCart = [...prevCart];
+            updatedCart.splice(index, 1);
+            return updatedCart;
+        });
+    };
+
+    return (
+        <div className='content' style={{ color: 'black', textAlign: 'center' }}>
+            <Navbar />
+            <h2 style={{ fontSize: '40px' }}>Cart</h2>
+            {cart.length === 0 ? (
+                <p style={{ fontSize: '35px' }}>Your cart is empty</p>
+            ) : (
+                <ul>
+                    {cart.map((item, index) => (
+                        <div key={index} className='item-user'>
+                            <img className='item-image' src={item.url} alt={item.item} style={{ width: '100px', height: '100px' }} />
+                            <div className='item-content'>
+                                <p>{item.item}</p>
+                                <p>Price: {item.price}</p>
+                                <p>Quantity: {item.count}</p>
+                            </div>
+                            <div className='item-button-user'>
+                                <button onClick={() => removeFromCart(index)}>Remove</button>
+                            </div>
+                        </div>
+                    ))}
+                </ul>
+            )}
+            <div style={{ margin: '10vw' }}>
+                <p>Items Cost:Rs{calculateTotalCost()}</p>
+                <p>Delivery charges:Rs</p>
+                <p>Total Rs: {}</p>
+                <button>Place Order</button>
+            </div>
+            <Bottom />
+        </div>
+    );
+}
+export {Home,User,Restaurants,Ordermenu,Cart};
