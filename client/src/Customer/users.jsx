@@ -5,12 +5,14 @@ import Bottom from '../Signup/bottom.jsx'
 import '../../styles/user.css'
 import '../../styles/signup.css'
 
-function Home(){
+function Home({user}){
     const [greeting, setGreeting] = useState('');
+    const {id}=useParams();
 
   useEffect(() => {
     const date = new Date();
     const hours = date.getHours();
+    console.log(user._id);
 
     if (hours < 12) {
       setGreeting(`Good Morning`);
@@ -22,7 +24,7 @@ function Home(){
   },[]);
     return(
         <div className='content'>
-        <Navbar />
+        <Navbar id={id}/>
         <div className='Home content-main' style={{color:'black'}}>
             <h1 style={{marginBottom:'20px'}}>{greeting}</h1>
             <h2>Social Service Food Delivery System</h2>
@@ -38,8 +40,9 @@ function Home(){
     );
 }
 
-function Restaurants(){
-    const { username } = useParams();
+function Restaurants({user}){
+    const username = user.username;
+    const {id}=useParams();
     const navigate=useNavigate();
     const [restaurants, setRestaurants] = useState([]);
       useEffect(() => {
@@ -62,7 +65,7 @@ function Restaurants(){
     return (
         <>
         <div className='content' style={{color:'black',textAlign:'center'}}>
-        <Navbar />
+        <Navbar id={id}/>
         <h1 className='Head ele-1'>Restaurants Near You</h1>
         <ul>
             {restaurants.map((restaurant, index) => (
@@ -73,7 +76,7 @@ function Restaurants(){
                     <h3>{restaurant.location}</h3>
                     </div>
                     <div className='item-button'>
-                    <button onClick={()=>{navigate(`/user/${username}/${restaurant.username}/menu`)}}>Order Food</button>
+                    <button onClick={()=>{navigate(`/user/${id}/${restaurant.username}/menu`)}}>Order Food</button>
                     </div>
                 </div>
             ))}
@@ -84,10 +87,11 @@ function Restaurants(){
     )
 };
 
-function Ordermenu({cart,setCart}){
+function Ordermenu({cart,setCart,user}){
     const { restaurant } = useParams();
     const [menu,setmenu]=useState({});
     const [count,setCount]=useState(0);
+    const {id}=useParams();
     useEffect(()=>{
         fetch(`http://localhost:5000/Restaurants/${restaurant}/menu`)
         .then(response=>response.json())
@@ -102,7 +106,7 @@ function Ordermenu({cart,setCart}){
         const existingItemIndex = cart.findIndex(item => item.item === itemname && item.restaurant === restaurant);
         let datac = 0;
         if (existingItemIndex !== -1) {
-            datac = parseInt(count) + parseInt(cart[existingItemIndex].count);
+            datac = parseInt(count) //+ parseInt(cart[existingItemIndex].count);
             if (datac > parseInt(max)) {
                 alert('Ordered Plates are more than available plates');
                 return;
@@ -126,7 +130,7 @@ function Ordermenu({cart,setCart}){
     }
     return(
         <div className='content' style={{color:'white',textAlign:'center'}}>
-            <Navbar />
+            <Navbar id={id}/>
             <h1 style={{fontSize:'50px'}}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
@@ -155,8 +159,8 @@ function Ordermenu({cart,setCart}){
     )
 }
 
-function Profile({setcurview}){
-    const { username } = useParams();
+function Profile({setcurview,user}){
+    const username = user.username;
     const [profile,setprofile] = useState({});
     useEffect(() => {
         const fetchData = async () => {
@@ -190,8 +194,8 @@ function Profile({setcurview}){
     )
 }
 
-function Setprofile() {
-    const { username } = useParams();
+function Setprofile({user}) {
+    const username = user.username;
     const [profile, setProfile] = useState({
         username: '',
         email: '',
@@ -318,16 +322,17 @@ function Setprofile() {
     );
 }
 
-function User() {
+function User({user}) {
     const [curview, setcurview] = useState('Profile');
+    const {id}=useParams();
 
     return (
         <div className='content' style={{alignItems:'stretch'}}>
-            <Navbar />
+            <Navbar id={id}/>
             <div className='Profile-block'>
                 <div id='Profile'>
-                {curview==='Profile'&& <Profile setcurview={setcurview}/>}
-                {curview==='Setprofile'&& <Setprofile setcurview={setcurview}/>}
+                {curview==='Profile'&& <Profile setcurview={setcurview} user={user}/>}
+                {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
                 </div>
                 <div id='order-history' style={{marginTop:'10vh'}}>
                     <h1>Order History</h1>
@@ -338,8 +343,9 @@ function User() {
     );
 }
 
-function Cart({ cart, setCart }) {
-    const { username } = useParams();
+function Cart({ cart, setCart,user }) {
+    const username = user.username;
+    const {id}=useParams();
     const calculateTotalCost = () => {
         let total = 0;
         cart.forEach(item => {
@@ -359,7 +365,7 @@ function Cart({ cart, setCart }) {
 
     return (
         <div className='content' style={{ color: 'black', textAlign: 'center' }}>
-            <Navbar />
+            <Navbar id={id}/>
             <h2 style={{ fontSize: '40px' }}>Cart</h2>
             {cart.length === 0 ? (
                 <p style={{ fontSize: '35px' }}>Your cart is empty</p>

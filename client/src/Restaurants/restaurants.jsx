@@ -5,7 +5,8 @@ import Bottom from '../Signup/bottom.jsx'
 import '../../styles/signup.css'
 import '../../styles/restaurents.css'
 
-function Home(){
+function Home({user}){
+    const {id}=useParams();
     const [greeting, setGreeting] = useState('');
     useEffect(() => {
     const date = new Date();
@@ -21,7 +22,7 @@ function Home(){
   },[]);
     return(
         <div className='content'>
-        <Navbar />
+        <Navbar id={id}/>
         <div className='Home content-main'>
             <h1 style={{marginBottom:'20px'}}>{greeting}</h1>
             <h2>Social Service Food Delivery System</h2>
@@ -36,22 +37,24 @@ function Home(){
         </div>
     );
 }
-function Orders(){
+function Orders({user}){
     const [orderdata,setorderdata]=useState({});
+    const {id}=useParams();
     useEffect(()=>{
         const date = new Date();
 
     })
     return(
         <div className='content'>
-            <Navbar />
+            <Navbar id={id}/>
             <Bottom />
         </div>
     )
 }
 
-function Menu(){
-    const {username} = useParams();
+function Menu({user}){
+    const username=user.username;
+    const {id} = useParams();
     const [menu,setmenu]= useState({});
     const navigate=useNavigate();
     useEffect(()=>{
@@ -76,7 +79,7 @@ function Menu(){
     }
     return (
         <div className='content' style={{color:'white',textAlign:'center'}}>
-            <Navbar />
+            <Navbar id={id}/>
             <h1 style={{fontSize:'50px'}}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
@@ -90,7 +93,7 @@ function Menu(){
                         </div>
                         <div className='item-button'>
                         <button onClick={()=>{deleteitem(itemName)}}>Delete Item</button>
-                        <button onClick={()=>{navigate(`/Restaurants/${username}/menu/${itemName}/edit`)}}>Edit Item</button>
+                        <button onClick={()=>{navigate(`/Restaurants/${id}}/menu/${itemName}/edit`)}}>Edit Item</button>
                         </div>
                     </div>
                 ))}
@@ -103,13 +106,14 @@ function Menu(){
     );
 }
 
-function Addmenu(){
+function Addmenu({user}){
+    const {id}=useParams();
     const [Name,setName]=useState('');
     const [url,seturl] = useState('https://res.cloudinary.com/djwc9jftg/image/upload/v1710950611/samples/breakfast.jpg');
     const [description,setdescription]=useState('');
     const [price,setprice]=useState(0);
     const [count,setcount]=useState(0);
-    const {username} = useParams();
+    const username = user.username;
     const [ResponseData,setResponseData]=useState('');
     const navigate = useNavigate();
 
@@ -129,7 +133,7 @@ function Addmenu(){
             .then(data => {
                 setResponseData(data.message);
                 if (data.message === 'Item added to menu successfully') {
-                    navigate(`/Restaurants/${username}/menu`);
+                    navigate(`/Restaurants/${id}/menu`);
                 }
                 setResponseData(data.error);
             })
@@ -140,7 +144,7 @@ function Addmenu(){
 
     return(
         <div className='content'>
-        <Navbar />
+        <Navbar id={id}/>
         <div className='signinblock content-main'>
             <h1 className='Head ele-1'>ADD ITEM</h1>
             <form onSubmit={send} className ='signup'>
@@ -181,8 +185,9 @@ function Addmenu(){
     </div>
 )};
 
-function Edititem() {
-    const { username, itemname } = useParams();
+function Edititem({user}) {
+    const username=user.username;
+    const { id, itemname } = useParams();
     const [url, setUrl] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState(0);
@@ -209,7 +214,7 @@ function Edititem() {
         };
 
         fetchData();
-    }, [username, itemname]);
+    }, [ itemname]);
 
     const updateItem = () => {
         const Name=itemname;
@@ -260,7 +265,7 @@ function Edititem() {
 
     return (
         <div className='content'>
-            <Navbar />
+            <Navbar id={id}/>
             <div className='signinblock content-main'>
             <h1 className='Head'>Edit Item: {itemname}</h1>
             <input
@@ -298,4 +303,188 @@ function Edititem() {
     );
 }
 
-export {Home,Orders,Menu,Addmenu,Edititem};
+function Profile({setcurview,user}){
+    const username = user.username;
+    const { id } = useParams();
+    const [profile,setprofile] = useState({});
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/user/${username}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                const data = await response.json();
+                setprofile(data);
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        fetchData();
+    }, [profile]);
+    return(
+        <>
+        <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
+        <div className='profileblock' style={{color:'white'}}>
+            <img src={profile.url} alt='Image' className='base-ele prof-image'/>
+            <h2 className='base-ele'>{profile.username}</h2>
+            <p className='profile-p'>EMAIL</p><p className='profile-p'>{profile.email}</p>
+            <p className='profile-p'>LOCATION</p><div className='profile-p'>{profile.location}</div>
+            <p className='profile-p'>ACCOUNT TYPE</p><p className='profile-p'>{profile.userType}</p>
+            
+            <button className='base-ele' onClick={()=>setcurview('Setprofile')}>Edit Profile</button>
+        </div>
+        </>
+    )
+}
+
+function Setprofile({user}) {
+    const username = user.username;
+    const [profile, setProfile] = useState({
+        username: '',
+        email: '',
+        location: ''
+    });
+
+    // Fetch user profile data from the backend
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/user/${username}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                const profileData = await response.json();
+                setProfile(profileData);
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
+    const [newPassword, setNewPassword] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newLocation, setNewLocation] = useState('');
+    const [newUrl,setNewUrl]=useState('');
+    useEffect(() => {
+        setNewPassword(profile.password || '');
+        setNewEmail(profile.email || '');
+        setNewLocation(profile.location || '');
+        setNewUrl(profile.url);
+    }, [profile]);
+
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/user/${username}/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    password: newPassword || profile.password, // Use existing value if not changed
+                    email: newEmail || profile.email,
+                    location: newLocation || profile.location,
+                    url: newUrl||profile.url
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update profile');
+            } 
+
+            // Handle success
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        }
+    };
+    const handleFileChange = (event) => {
+        alert('Please Wait,It takes some time to update image .Please donot refresh');
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.url){
+            const uploadedUrl = data.url;
+            setNewUrl(uploadedUrl);
+            }
+            else{
+                error('Error in uploading image');
+            }
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+        });
+      };
+
+    return (
+        <div className='profileblock' style={{color:'white'}}>
+             <input
+                type="file"
+                accept="image/*"
+                id="fileInput"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+            />
+            <label htmlFor="fileInput" className='base-ele prof-image-button'>
+                <img src={newUrl} alt='Image' className='base-ele prof-image' />
+            </label>
+            <h2 className='base-ele'>{username}</h2>
+            <form onSubmit={handleSubmit} className ='signup'>
+            <label>PASSWORD</label>
+            <input
+                type="password"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <label>EMAILID</label>
+            <input
+                type="email"
+                placeholder="New Email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+            />
+            <label>
+            LOCATION
+            </label>
+            <input
+                type="text"
+                placeholder="New Location"
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+            />
+            <button className='base-ele' >Update Profile</button>
+            </form>
+        </div>
+    );
+}
+
+function User({user}) {
+    const [curview, setcurview] = useState('Profile');
+
+    return (
+        <div className='content' style={{alignItems:'stretch',color:'white'}}>
+            <Navbar />
+            <div className='Profile-block'>
+                <div id='Profile'>
+                {curview==='Profile'&& <Profile setcurview={setcurview} user={user}/>}
+                {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
+                </div>
+                <div id='order-history' style={{marginTop:'10vh'}}>
+                    <h1>Order History</h1>
+                </div>
+            </div>
+            <Bottom />
+        </div>
+    );
+}
+
+export {Home,Orders,Menu,Addmenu,Edititem,User};

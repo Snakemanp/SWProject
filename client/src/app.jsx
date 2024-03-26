@@ -14,8 +14,8 @@ function App() {
   return (
       <Routes>
         <Route path="/*"  element={<Page1 />} />
-        <Route path="/user/:username/*" element={<Page2 />} />
-        <Route path="/Restaurants/:username/*" element={<Page3 />} />
+        <Route path="/user/:id/*" element={<Page2 />} />
+        <Route path="/Restaurants/:id/*" element={<Page3 />} />
       </Routes>
   );
 }

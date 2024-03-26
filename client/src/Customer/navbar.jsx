@@ -1,29 +1,28 @@
 // navbar.jsx
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import '../../styles/navbar.css';
 
-const Navbar = () => {
-    const {username} = useParams();
+function Navbar({id}){
   return (
     <nav className='Navbar'>
       <div className='left'>
         <button className='navele' id='logo'>SSFDS</button>
-        <Link to={`/user/${username}/`}>
+        <Link to={`/user/${id}/`}>
           <button className='navele'>HOME</button>
         </Link>
-        <Link to={`/user/${username}/restuarants`}>
+        <Link to={`/user/${id}/restuarants`}>
           <button className='navele'>RESTAURANTS</button>
         </Link>
       </div>
       <div className='right'>
-        <Link to={`/user/${username}/cart`}>
+        <Link to={`/user/${id}/cart`}>
           <button className='navele'>
             <FaShoppingCart size={'28'}/>
           </button>
         </Link>
-        <Link to={`/user/${username}/profile`}>
+        <Link to={`/user/${id}/profile`}>
           <button className='navele'>PROFILE</button>
         </Link>
         <Link to='/'>

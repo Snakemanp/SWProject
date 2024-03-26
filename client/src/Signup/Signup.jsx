@@ -24,8 +24,9 @@ function Login() {
             console.log(data.message);
             setResponseData(data.message);
             if (data.message === 'Signin successful') {
-                if(data.accounttype==='CUSTOMER') navigate(`/user/${username}`);
-                if(data.accounttype==='RESTAURANT') navigate(`/Restaurants/${username}`);
+                console.log(data.id)
+                if(data.accounttype==='CUSTOMER') navigate(`/user/${data.id}`);
+                if(data.accounttype==='RESTAURANT') navigate(`/Restaurants/${data.id}`);
             }
         })
         .catch(error => {
@@ -80,6 +81,7 @@ function Signup() {
     const [location, setLocation] = useState('');
     const [userType, setUserType] = useState('CUSTOMER');
     const [responseData,setresponseData] = useState('');
+    const navigate=useNavigate();
     const handleSubmit = (e) => {
       e.preventDefault();
       // Validation logic
@@ -98,6 +100,7 @@ function Signup() {
       .then(response => response.json())
         .then(data => {
             console.log(data.message);
+            if(data.message==='Data received successfully') navigate('/signin');
             setresponseData(data.message);
         })
         .catch(error => {

@@ -2,6 +2,7 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 const { connectToDatabase } = require('./data');
+const { ObjectId } = require('mongodb');
 const { uploadimg } = require('./cloudimage');
 const axios = require('axios');
 const multer = require('multer');
@@ -81,7 +82,7 @@ app.post('/signin', async (req, res) => {
     try {
         const user = await data.collection('accounts').findOne({ username: requestData.username });
         if (user && user.password === requestData.password) {
-            res.json({ message: 'Signin successful', accounttype: user.userType });
+            res.json({ message: 'Signin successful', accounttype: user.userType, id:user._id});
         } else {
             res.status(401).json({ error: 'Unauthorized',message: 'Incorrect Username or Password'});
         }
@@ -366,6 +367,18 @@ app.get('/dist',(req,res)=>{
     res.json({distance:distance});
 });
 
+app.get('/id',async(req,res)=>{
+    const {id}=req.query;
+    try{
+        console.log('ID:', id);
+        const user = await data.collection('accounts').findOne({ _id: new ObjectId(id) });
+        res.json(user);
+    }
+    catch (error) {
+        console.error('Error uploading file:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
