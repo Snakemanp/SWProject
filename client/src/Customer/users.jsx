@@ -346,15 +346,16 @@ function User({user}) {
 function Cart({ cart, setCart,user }) {
     const username = user.username;
     const {id}=useParams();
+    const [cost,setcost]=useState(0);
+    const [delcost,setdelcost]=useState(0);
     const calculateTotalCost = () => {
         let total = 0;
         cart.forEach(item => {
             total += parseFloat(item.price) * item.count;
         });
-        return total;
+        setcost(total);
     };
 
-    // Function to remove an item from the cart
     const removeFromCart = (index) => {
         setCart(prevCart => {
             const updatedCart = [...prevCart];
@@ -362,6 +363,32 @@ function Cart({ cart, setCart,user }) {
             return updatedCart;
         });
     };
+
+    async function calculateDeliveryCharges() {
+        let delivery = {};
+        let del=0;
+        for (const item of cart) {
+            const res = await fetch(`http://localhost:5000/dist?user1=${username}&user2=${item.restaurant}`);
+            const data = await res.json();
+            const distance = parseInt(data.distance);
+            if (distance / 1000 < 2) {
+                delivery[item.restaurant]={cost: 0};
+            } else {
+                delivery[item.restaurant]={cost: ((distance / 1000) * 5)};
+            }
+        }
+        for (const key in delivery) {
+            del += delivery[key].cost;
+        }
+        setdelcost(del);
+    }
+
+    useEffect(() => {
+        calculateTotalCost();
+        calculateDeliveryCharges();
+    }, [cart]);
+
+    const totalAmount = cost + delcost;
 
     return (
         <div className='content' style={{ color: 'black', textAlign: 'center' }}>
@@ -387,9 +414,9 @@ function Cart({ cart, setCart,user }) {
                 </ul>
             )}
             <div style={{ margin: '10vw' }}>
-                <p>Items Cost:Rs{calculateTotalCost()}</p>
-                <p>Delivery charges:Rs</p>
-                <p>Total Rs: {}</p>
+                <p>Items Cost:Rs{cost}</p>
+                <p>Delivery charges:Rs{delcost}</p>
+                <p>Total Rs: {totalAmount}</p>
                 <button>Place Order</button>
             </div>
             <Bottom />

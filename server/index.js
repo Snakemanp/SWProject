@@ -359,14 +359,24 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     }
 });
 
-app.get('/dist',(req,res)=>{
-    const { user1,user2 } = req.query;
-    const u1=data.collection('accounts').findOne({ username: user1 });
-    const u2=data.collection('accounts').findOne({ username: user2 });
-    let distance=getDistance(u1.geometry,u2.geometry);
-    res.json({distance:distance});
+app.get('/dist', async (req, res) => {
+    try {
+        const { user1, user2 } = req.query;
+        const u1 = await data.collection('accounts').findOne({ username: user1 });
+        const u2 = await data.collection('accounts').findOne({ username: user2 });
+        if (!u1 || !u2) {
+            return res.status(404).json({ error: 'One or both users not found' });
+        }
+        if (!u1.geometry || !u2.geometry) {
+            return res.status(400).json({ error: 'User objects missing geometry information' });
+        }
+        let distance = getDistance(u1.geometry, u2.geometry);
+        res.json({ distance: distance });
+    } catch (error) {
+        console.error('Error calculating distance:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
-
 app.get('/id',async(req,res)=>{
     const {id}=req.query;
     try{
