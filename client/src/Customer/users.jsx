@@ -87,31 +87,39 @@ function Restaurants({user}){
     )
 };
 
-function Ordermenu({cart,setCart,user}){
+function Ordermenu({ cart, setCart, user }) {
     const { restaurant } = useParams();
-    const [menu,setmenu]=useState({});
-    const [count,setCount]=useState(0);
-    const {id}=useParams();
-    useEffect(()=>{
+    const [menu, setMenu] = useState({});
+    const { id } = useParams();
+    const [itemList, setItemList] = useState({});
+
+    useEffect(() => {
         fetch(`http://localhost:5000/Restaurants/${restaurant}/menu`)
-        .then(response=>response.json())
-        .then(data=>{
-            if(data.menu) setmenu(data.menu);
-        })
-        .catch(error => {
-            console.error('Error fetching menu:', error);
-        });
-    },[]);
-    function addtocart(itemname, max, price, url) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.menu) {
+                    setMenu(data.menu);
+                    const initialItemList = {};
+                    Object.keys(data.menu).forEach(itemName => {
+                        initialItemList[itemName] = 0;
+                    });
+                    setItemList(initialItemList);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching menu:', error);
+            });
+    }, []);
+
+    function addtocart(itemname, max, price, url, count) {
+        if(count===0)  return;
         const existingItemIndex = cart.findIndex(item => item.item === itemname && item.restaurant === restaurant);
-        let datac = 0;
+        let datac = parseInt(count);
         if (existingItemIndex !== -1) {
-            datac = parseInt(count) //+ parseInt(cart[existingItemIndex].count);
             if (datac > parseInt(max)) {
                 alert('Ordered Plates are more than available plates');
                 return;
             }
-            // If item already exists in cart, update its count
             setCart(prevCart => {
                 const updatedCart = [...prevCart];
                 updatedCart[existingItemIndex].count = datac;
@@ -119,7 +127,6 @@ function Ordermenu({cart,setCart,user}){
                 return updatedCart;
             });
         } else {
-            // If item doesn't exist in cart, add it
             const data = { restaurant: restaurant, item: itemname, count: count, price: price, url: url };
             setCart(prevCart => {
                 const tempcart = [...prevCart, data];
@@ -128,36 +135,53 @@ function Ordermenu({cart,setCart,user}){
             });
         }
     }
-    return(
-        <div className='content' style={{color:'white',textAlign:'center'}}>
-            <Navbar id={id}/>
-            <h1 style={{fontSize:'50px'}}>Menu</h1>
+
+    const handleInputChange = (itemName, value) => {
+        if (isNaN(value)) return;
+        setItemList(prevItemList => ({
+            ...prevItemList,
+            [itemName]: value
+        }));
+    };
+
+    return (
+        <div className='content' style={{ color: 'white', textAlign: 'center' }}>
+            <Navbar id={id} />
+            <h1 style={{ fontSize: '50px' }}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
                     <div key={itemName} className='item-user'>
-                        <img className='item-image' src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
+                        <img className='item-image' src={menu[itemName].url} alt={itemName} style={{ width: '100px' }} />
                         <div className='item-content'>
-                        <h2>{itemName}</h2>
-                        <h4>{menu[itemName].Description}</h4>
-                        <div className="price">
-                            <span>Price:</span>
-                            <span className="original-price">{menu[itemName].price}</span>
-                            <span className="discounted-price">{parseFloat(menu[itemName].price)*0.8}</span>
-                        </div>
-                        <p>Plate count:{menu[itemName].count}</p>
+                            <h2>{itemName}</h2>
+                            <h4>{menu[itemName].Description}</h4>
+                            <div className="price">
+                                <span>Price:</span>
+                                <span className="original-price">{menu[itemName].price}</span>
+                                <span className="discounted-price">{parseFloat(menu[itemName].price) * 0.8}</span>
+                            </div>
+                            <p>Plate count: {menu[itemName].count}</p>
                         </div>
                         <div className='item-button-user'>
-                        <input type="number" min={1} max={menu[itemName].count} style={{width:'8vw'}} onChange={(e) => setCount(parseInt(e.target.value))}/>
-                        <button onClick={()=>{addtocart(itemName,menu[itemName].count,parseFloat(menu[itemName].price)*0.8,menu[itemName].url)}}>Save Changes</button>
+                            <input
+                                type="number"
+                                min={0}
+                                max={menu[itemName].count || ''}
+                                style={{ width: '8vw' }}
+                                value={itemList[itemName]}
+                                onChange={(e) => handleInputChange(itemName, parseInt(e.target.value))}
+                            />
+                            <button onClick={() => { addtocart(itemName, menu[itemName].count, parseFloat(menu[itemName].price) * 0.8, menu[itemName].url, itemList[itemName]) }}>Save Changes</button>
                         </div>
                     </div>
                 ))}
             </ul>
-            <button onClick={()=>{setCart([])}} style={{margin:'auto'}}>Clear Cart</button>
+            <button onClick={() => { setCart([]) }} style={{ margin: 'auto' }}>Clear Cart</button>
             <Bottom />
-            </div>
-    )
+        </div>
+    );
 }
+
 
 function Profile({setcurview,user}){
     const username = user.username;
@@ -390,6 +414,78 @@ function Cart({ cart, setCart,user }) {
 
     const totalAmount = cost + delcost;
 
+    const amount = totalAmount*100;
+    const currency = "INR";
+    const receiptId = user.id;
+
+
+    const paymentHandler = async (e) => {
+        const response = await fetch("http://localhost:5000/order", {
+          method: "POST",
+          body: JSON.stringify({
+            amount,
+            currency,
+            receipt: receiptId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const order = await response.json();
+        console.log(order);
+    
+        var options = {
+          key: "rzp_test_LlOuAePLt2waoI", // Enter the Key ID generated from the Dashboard
+          amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency,
+          name: "Acme Corp", //your business name
+          description: "Test Transaction",
+          image: "https://example.com/your_logo",
+          order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          handler: async function (response) {
+            const body = {
+              ...response,
+            };
+    
+            const validateRes = await fetch(
+              "http://localhost:5000/order/validate",
+              {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            const jsonRes = await validateRes.json();
+            console.log(jsonRes);
+          },
+          prefill: {
+            //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+            name: user.usename, //your customer's name
+            email: user.email,
+            contact: "8179986644", //Provide the customer's phone number for better conversion rates
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+        var rzp1 = new window.Razorpay(options);
+        rzp1.on("payment.failed", function (response) {
+          alert(response.error.code);
+          alert(response.error.description);
+          alert(response.error.source);
+          alert(response.error.step);
+          alert(response.error.reason);
+          alert(response.error.metadata.order_id);
+          alert(response.error.metadata.payment_id);
+        });
+        rzp1.open();
+        e.preventDefault();
+      };
     return (
         <div className='content' style={{ color: 'black', textAlign: 'center' }}>
             <Navbar id={id}/>
@@ -417,7 +513,7 @@ function Cart({ cart, setCart,user }) {
                 <p>Items Cost:Rs{cost}</p>
                 <p>Delivery charges:Rs{delcost}</p>
                 <p>Total Rs: {totalAmount}</p>
-                <button>Place Order</button>
+                <button onClick={paymentHandler}>Place Order</button>
             </div>
             <Bottom />
         </div>

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
@@ -8,11 +10,17 @@ const axios = require('axios');
 const multer = require('multer');
 const opencage = require('opencage-api-client');
 const { getDistance } = require('geolib');
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+
+const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 const port = 5000;
 let data;
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 
@@ -43,8 +51,8 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'chase.shields92@ethereal.email',
-        pass: 'QeRRMYM4v5BwSbhAZJ'
+        user: process.env.EMAIL_NAME,
+        pass: process.env.EMAIL_PASSWORD
     }
 });
 
@@ -389,6 +397,50 @@ app.get('/id',async(req,res)=>{
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
+app.post("/order", async (req, res) => {
+    console.log(req.body);
+    try {
+      const razorpay = new Razorpay({
+        key_id: 'rzp_test_LlOuAePLt2waoI',
+        key_secret: 'yBfic4BzBGIWl8MBjBqIErL4',
+      });
+  
+      const options = req.body;
+      const order = await razorpay.orders.create(options);
+      console.log('entered');
+  
+      if (!order) {
+        console.log('error encountered');
+        return res.status(500).send("Error");
+      }
+  
+      res.json(order);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error");
+    }
+  });
+  
+  app.post("/order/validate", async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
+  
+    const sha = crypto.createHmac("sha256",'yBfic4BzBGIWl8MBjBqIErL4' );
+    //order_id + "|" + razorpay_payment_id
+    sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const digest = sha.digest("hex");
+    if (digest !== razorpay_signature) {
+      return res.status(400).json({ msg: "Transaction is not legit!" });
+    }
+  
+    res.json({
+      msg: "success",
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id,
+    });
+  });
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });

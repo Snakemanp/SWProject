@@ -225,8 +225,8 @@ function Signup() {
     };
 
     return (
-        <>
-            <div className='signinblock'>
+        <div className='content'>
+            <Navbar />            <div className='signinblock'>
                 <h1 className='Head ele-1'>RECOVER PASSWORD</h1>
                 <form className='grid-ele signup' >
                     <label className='grid-ele ele-2' htmlFor="username1">Username</label>
@@ -238,7 +238,7 @@ function Signup() {
                 <button className='grid-ele ele-7' onClick={send}>Recover</button>
             </div>
             <Bottom />
-        </>
+        </div>
     );
 }
 
