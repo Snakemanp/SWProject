@@ -27,6 +27,7 @@ function Login() {
                 console.log(data.id)
                 if(data.accounttype==='CUSTOMER') navigate(`/user/${data.id}`);
                 if(data.accounttype==='RESTAURANT') navigate(`/Restaurants/${data.id}`);
+                if(data.accounttype==='NGO') navigate(`/Ngo/${data.id}`);
             }
         })
         .catch(error => {

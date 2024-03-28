@@ -10,17 +10,16 @@ const axios = require('axios');
 const multer = require('multer');
 const opencage = require('opencage-api-client');
 const { getDistance } = require('geolib');
-const Razorpay = require("razorpay");
-const crypto = require("crypto");
 
-const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const stripe=require('stripe')(process.env.STRIPE_KEY);
 
 const port = 5000;
 let data;
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:5173'
-}));
+/*app.use(cors({
+    origin: 'http://localhost:5173',
+}));*/
+app.use(cors());
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 
@@ -33,7 +32,7 @@ async function getCoordinates(address) {
             const coordinates = place.geometry;
             return coordinates;
         } else {
-            console.log('Error: Unable to fetch coordinates');
+            //console.log('Error: Unable to fetch coordinates');
             return null;
         }
     } catch (error) {
@@ -62,7 +61,7 @@ app.post('/signup', async (req, res) => {
     // Example: Insert data into a MongoDB collection
     if(await data.collection('accounts').findOne({ username: requestData.username })){
         res.status(501).json({ message: 'OOPS! Username unavailable' });
-        console.log("Alredy exists");
+        //console.log("Alredy exists");
         return;
     }
     try {
@@ -72,9 +71,9 @@ app.post('/signup', async (req, res) => {
             return res.status(500).json({ error: 'Error fetching coordinates' });
         }
         requestData.geometry = coordinates;
-        console.log(requestData);
+        //console.log(requestData);
         const result = await data.collection('accounts').insertOne(requestData);
-        console.log('Inserted document with _id:', result.insertedId);
+        //console.log('Inserted document with _id:', result.insertedId);
         res.json({ message: 'Data received successfully' });
     } catch (error) {
         console.error('Error inserting document:', error);
@@ -84,7 +83,7 @@ app.post('/signup', async (req, res) => {
 
 app.post('/signin', async (req, res) => {
     const requestData = req.body;
-    console.log(requestData);
+    //console.log(requestData);
 
     // Example: Query data from a MongoDB collection
     try {
@@ -152,6 +151,8 @@ app.get('/user/restaurants', async (req, res) => {
 app.put('/user/:username/update', async (req, res) => {
     const { username } = req.params;
     const updatedData = req.body;
+    const coordinates = await getCoordinates(updatedData.location);
+    updatedData.geometry = coordinates;
 
     try {
         // Find the user document by username
@@ -177,7 +178,7 @@ app.put('/user/:username/update', async (req, res) => {
 
 app.post('/reset', async (req, res) => {
     const requestData = req.body;
-    console.log(requestData);
+    //console.log(requestData);
 
     try {
         const user = await data.collection('accounts').findOne({ username: requestData.username });
@@ -190,7 +191,7 @@ app.post('/reset', async (req, res) => {
                     text: `Your password is: ${user.password}`
                 });
                 
-                console.log('Email sent:', info.messageId);
+                //console.log('Email sent:', info.messageId);
                 res.status(200).json({ message: 'Password sent to your email' });
             } catch (error) {
                 console.error('Error sending email:', error);
@@ -355,11 +356,11 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        console.log('Uploaded file:', req.file.path);
+        //console.log('Uploaded file:', req.file.path);
         const result = await uploadimg(req.file.path);
 
         // Return the URL to the frontend
-        console.log(result);
+        //console.log(result);
         res.json({ url: result });
     } catch (error) {
         console.error('Error uploading file:', error);
@@ -388,7 +389,7 @@ app.get('/dist', async (req, res) => {
 app.get('/id',async(req,res)=>{
     const {id}=req.query;
     try{
-        console.log('ID:', id);
+        //console.log('ID:', id);
         const user = await data.collection('accounts').findOne({ _id: new ObjectId(id) });
         res.json(user);
     }
@@ -398,48 +399,122 @@ app.get('/id',async(req,res)=>{
     }
 })
 
-app.post("/order", async (req, res) => {
-    console.log(req.body);
-    try {
-      const razorpay = new Razorpay({
-        key_id: 'rzp_test_LlOuAePLt2waoI',
-        key_secret: 'yBfic4BzBGIWl8MBjBqIErL4',
-      });
-  
-      const options = req.body;
-      const order = await razorpay.orders.create(options);
-      console.log('entered');
-  
-      if (!order) {
-        console.log('error encountered');
-        return res.status(500).send("Error");
-      }
-  
-      res.json(order);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send("Error");
-    }
-  });
-  
-  app.post("/order/validate", async (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-      req.body;
-  
-    const sha = crypto.createHmac("sha256",'yBfic4BzBGIWl8MBjBqIErL4' );
-    //order_id + "|" + razorpay_payment_id
-    sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-    const digest = sha.digest("hex");
-    if (digest !== razorpay_signature) {
-      return res.status(400).json({ msg: "Transaction is not legit!" });
-    }
-  
-    res.json({
-      msg: "success",
-      orderId: razorpay_order_id,
-      paymentId: razorpay_payment_id,
+    app.post('/user/payment', async (req, res) => {
+        const {id}=req.query;
+        const to=req.body['to'];
+        try {
+        const lineItems = []; 
+        for (const item of req.body['cart']) {
+            const restaurant = item.restaurant;
+            const itemName = item.item;
+            const menu = await data.collection('accounts').findOne({ username: restaurant });
+            const menuItem=menu.menu[itemName];
+            //console.log(menuItem);
+            const lineItem = {
+                price_data: {
+                    currency: 'inr',
+                    product_data: {
+                        name: `${itemName} - ${restaurant}`
+                    },
+                    unit_amount: parseInt(menuItem.price) * 80
+                },
+                quantity: item.count
+            };
+            lineItems.push(lineItem);
+        }
+        lineItems.push(
+            {price_data: {
+            currency: 'inr',
+            product_data: {
+                name: 'delivery charges' 
+            },
+            unit_amount: parseInt(req.body.delivery)*100
+        },
+        quantity: 1});
+        //console.log(lineItems);
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: lineItems,
+            success_url: `http://localhost:5173/user/${id}/order/success/${to}`, 
+            cancel_url:  `http://localhost:5173/user/${id}/order/failure`,
+        });
+
+        res.json({ url: session.url });
+        } catch (e) {
+        // Handle any errors and send an error response
+        res.status(500).json({ error: e.message });
+        }
     });
-  });
+
+    app.post('/post/order', async (req, res) => {
+        const { user, to } = req.query;
+        const cart = req.body;
+        const todayDate = new Date().toISOString().split('T')[0]; // Format today's date as a string
+        const timeString = new Date().toTimeString().split(' ')[0];
+        if (!user) {
+            return res.status(400).json({ error: 'User must be provided in the query parameters' });
+        }
+        try {
+            let userOrder = await data.collection('orders').findOne({ username: user });
+            if (!userOrder) {
+                userOrder = { username: user, orders: {} }; // Initialize orders as an empty object
+            }
+            for (const item of cart) {
+                let restaurantOrder = await data.collection('orders').findOne({ username: item.restaurant });
+                let restaurant = await data.collection('accounts').findOne({ username: item.restaurant });
+                restaurant.menu[item.item].count=parseInt(restaurant.menu[item.item].count)-parseInt(item.count);
+                if (!restaurantOrder) {
+                    restaurantOrder = { username: item.restaurant, items: {} }; // Initialize items as an empty object
+                }
+                if (!restaurantOrder.items[todayDate]) {
+                    restaurantOrder.items[todayDate] = []; // Initialize items for today's date as an empty array
+                }
+                let customer = user;
+                if (to) {
+                    customer = to;
+                }
+                restaurantOrder.items[todayDate].push({
+                    item: item.item,
+                    customer: customer,
+                    cost: item.price,
+                    count: item.count
+                });
+                let donated = null;
+                if (to) {
+                    donated = to;
+                }
+                await data.collection('orders').updateOne({ username: item.restaurant }, { $set: restaurantOrder }, { upsert: true });
+                await data.collection('accounts').updateOne({ username: item.restaurant }, {$set: restaurant }, {upsert: true});
+                userOrder.orders[timeString] = userOrder.orders[timeString] || []; // Initialize orders for today's date as an empty array
+                userOrder.orders[timeString].push({
+                    item: item.item,
+                    restaurant: item.restaurant,
+                    cost: item.price,
+                    count: item.count,
+                    date:todayDate,
+                    donated: donated
+                });
+            }
+            await data.collection('orders').updateOne({ username: user }, { $set: userOrder }, { upsert: true });
+            res.status(200).json({ message: 'Order placed successfully' });
+        } catch (error) {
+            console.error('Error placing order:', error);
+            res.status(500).json({ error: 'An error occurred while placing the order' });
+        }
+    });
+    
+    app.get('/orderhistory',async(req,res)=>{
+        const {username} = req.query;
+        try{
+            const user = await data.collection('orders').findOne({username:username});
+            const orders= user.orders||{};
+            res.json(orders);
+        }
+        catch{
+            res.error(500).json({error:'server error'});
+        }
+    })
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
