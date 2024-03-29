@@ -110,8 +110,16 @@ app.get('/restaurants', async (req, res) => {
     }
 });
 
-app.get('/user/restaurants', async (req, res) => {
+app.get('/list/:required', async (req, res) => {
     const { user } = req.query;
+    const {required} = req.params;
+    let type;
+    if(required==='restaurants'){
+        type="RESTAURANT";
+    }
+    if(required==='Ngo'){
+        type="NGO";
+    }
     try {
         const userData = await data.collection('accounts').findOne({ username: user });
         if (!userData || !userData.geometry) {
@@ -120,7 +128,7 @@ app.get('/user/restaurants', async (req, res) => {
         const userLocation = userData.geometry;
 
         // Get all restaurants from the database
-        const restaurants = await data.collection('accounts').find({ userType: 'RESTAURANT' }).toArray();
+        const restaurants = await data.collection('accounts').find({ userType: type }).toArray();
 
         // Filter restaurants within 10km radius
         const nearbyRestaurants = restaurants.filter(restaurant => {
@@ -225,10 +233,8 @@ app.get('/user/:username', async (req, res) => {
 app.get('/Restaurants/:username/orders', async (req, res) => {
     const { username } = req.params;
     const { day } = req.query;
-    console.log(day);
     try {
         const userOrders = await data.collection('orders').findOne({ username: username });
-        console.log(userOrders.items[day]);
         res.json({orders:userOrders.items[day]})
     } catch (error) {
         console.error('Error querying document:', error);

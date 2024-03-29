@@ -51,7 +51,7 @@ function Restaurants({user}){
   
       const fetchRestaurants = async () => {
           try {
-              const response = await fetch(`http://localhost:5000/user/restaurants?user=${username}`);
+              const response = await fetch(`http://localhost:5000/list/restaurants?user=${username}`);
               if (!response.ok) {
                   throw new Error('Failed to fetch restaurants');
               }
@@ -425,6 +425,25 @@ function User({user}) {
     );
 }
 
+function payment(to,delc,id,cart){
+    if(cart.length===0) return
+    fetch(`http://localhost:5000/user/payment/Online?id=${id}`,{
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:JSON.stringify({cart:cart,delivery:delc,to:to})
+    }).then(res=>{
+        if(res.ok) return res.json()
+    return res.json().then(json=>Promise.reject(json))})
+        .then(({url})=>{
+    window.location.href=url;
+    })
+    .catch(e=>{
+        console.error(e.error);
+    })
+}
+
 function Cart({ cart, setCart,user }) {
     const navigate=useNavigate();
     const username = user.username;
@@ -473,24 +492,6 @@ function Cart({ cart, setCart,user }) {
 
     let totalAmount = cost + delcost;
 
-    function payment(to,delc,cost){
-        if(cost<=0) return
-        fetch(`http://localhost:5000/user/payment/Online?id=${id}`,{
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body:JSON.stringify({cart:cart,delivery:delc,to:to})
-        }).then(res=>{
-            if(res.ok) return res.json()
-        return res.json().then(json=>Promise.reject(json))})
-            .then(({url})=>{
-        window.location.href=url;
-        })
-        .catch(e=>{
-            console.error(e.error);
-        })
-    }
     return (
         <div className='content' style={{ color: 'black', textAlign: 'center' }}>
             <Navbar id={id}/>
@@ -518,16 +519,61 @@ function Cart({ cart, setCart,user }) {
                 <p>Items Cost:Rs{cost}</p>
                 <p>Delivery charges:Rs{delcost}</p>
                 <p>Total Rs: {totalAmount}</p>
-                <button onClick={() => { payment(username, delcost, cost) }}>Place Order</button>
-                <button onClick={() => { payment('NGO', 0, cost) }}>Donate to NGO</button>
+                <button onClick={() => { payment(username, delcost,id,cart) }}>Place Order</button>
+                <button onClick={() => { navigate(`/user/${id}/findngo`) }}>Donate to NGO</button>
                 <button onClick={() => { navigate(`/user/${id}/order/success/COD/${username}`) }}>Cash on Delivery</button>
-                <button onClick={() => { payment(username, 0, cost) }}>Self Pickup</button>
+                <button onClick={() => { payment(username, 0,id,cart) }}>Self Pickup</button>
             </div>
             <Bottom />
         </div>
     );
 }
 
+function NGO({user,cart}){
+    const username = user.username;
+    const {id}=useParams();
+    const [restaurants, setRestaurants] = useState([]);
+      useEffect(() => {
+          fetchRestaurants();
+      }, []); // Empty dependency array to ensure useEffect runs only once when the component mounts
+  
+      const fetchRestaurants = async () => {
+          try {
+              const response = await fetch(`http://localhost:5000/list/Ngo?user=${username}`);
+              if (!response.ok) {
+                  throw new Error('Failed to fetch Ngo list');
+              }
+              const data = await response.json();
+              setRestaurants(data);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      };
+  
+    return (
+        <>
+        <div className='content' style={{color:'black',textAlign:'center'}}>
+        <Navbar id={id}/>
+        <h1 className='Head ele-1'>NGO's Near You</h1>
+        <ul>
+            {restaurants.map((restaurant, index) => (
+                <div key={index} className='item-user'>
+                    <img src={restaurant.url} alt={restaurant.username} style={{width:'100px'/*,height:'100px'*/}}/>
+                    <div className='item-content'>
+                    <h1>{restaurant.username}</h1>
+                    <h3>{restaurant.location}</h3>
+                    </div>
+                    <div className='item-button'>
+                    <button onClick={()=>{payment(restaurant.username,0,id,cart)}}>Donate</button>
+                    </div>
+                </div>
+            ))}
+        </ul>
+        <Bottom />
+        </div>
+    </>
+    )
+}
 function Success({cart,user,setCart}){
     const {to,mode}=useParams();
     const {id}=useParams();
@@ -565,8 +611,8 @@ function Success({cart,user,setCart}){
         <div className='content'>
             <Navbar id={id}/>
             {to===username && <h1 style={{margin:'auto',color:'black',textAlign:'center'}}>Order is Recieved Successfully<br />Our delivery partner will contact you soon</h1>}
-            {to==='NGO' && <h1 style={{margin:'auto',color:'black'}}>Order to be Donated</h1>}
             {to==='Self' && <h1 style={{margin:'auto',color:'black'}}>Order is Placed in Restaurant</h1>}
+            {to!==username && to!=='self' && <h1 style={{margin:'auto',color:'black'}}>Order is Donated to {to}</h1>}
             <Bottom />
         </div>
     )
@@ -582,4 +628,4 @@ function Failure(){
         </div>
     )
 }
-export {Home,User,Restaurants,Ordermenu,Cart,Success,Failure};
+export {Home,User,Restaurants,Ordermenu,Cart,Success,Failure,NGO};

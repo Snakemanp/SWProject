@@ -51,7 +51,7 @@ function Restaurants({user}){
   
       const fetchRestaurants = async () => {
           try {
-              const response = await fetch(`http://localhost:5000/user/restaurants?user=${username}`);
+              const response = await fetch(`http://localhost:5000/list/restaurants?user=${username}`);
               if (!response.ok) {
                   throw new Error('Failed to fetch restaurants');
               }
