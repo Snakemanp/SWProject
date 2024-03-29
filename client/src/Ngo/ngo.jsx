@@ -389,24 +389,7 @@ function Cart({ cart, setCart,user }) {
     };
 
     async function calculateDeliveryCharges() {
-        let delivery = {};
-        let del=0;
-        for (const item of cart) {
-            const res = await fetch(`http://localhost:5000/dist?user1=${username}&user2=${item.restaurant}`);
-            const data = await res.json();
-            const distance = parseInt(data.distance);
-            if (distance / 1000 < 2) {
-                delivery[item.restaurant]={cost: 0};
-            } else {
-                delivery[item.restaurant]={cost: ((distance / 1000) * 5)};
-            }
-        }
-        for (const key in delivery) {
-            del += delivery[key].cost;
-        }
-        del=parseInt(del*100);
-        del=del/100;
-        setdelcost(del);
+        setdelcost(0);
     }
 
     useEffect(() => {
@@ -414,8 +397,8 @@ function Cart({ cart, setCart,user }) {
         calculateDeliveryCharges();
     }, [cart]);
 
-    function payment(to,delc){
-        if(totalAmount<=0) return
+    function payment(to,delc,cost){
+        if(cost<=0) return
         fetch(`http://localhost:5000/user/payment?id=${id}`,{
             method: 'POST',
             headers: {
@@ -459,9 +442,7 @@ function Cart({ cart, setCart,user }) {
                 <p>Items Cost:Rs{cost}</p>
                 <p>Delivery charges:Rs{delcost}</p>
                 <p>Total Rs: {parseInt(cost+delcost)}</p>
-                <button onClick={()=>{payment(username,delcost)}}>Place Order</button>
-                <button onClick={()=>{payment('NGO',0)}}>Donate to NGO</button>
-                <button onClick={()=>{if(totalAmount>0)navigate(`/user/${id}/order/success/${username}`)}}>Cash on Delivery</button>
+                <button onClick={()=>{payment(username,delcost,cost)}}>Place Order</button>
                 <button onClick={()=>{payment(username,0)}}>Self Pickup</button>
             </div>
             <Bottom />

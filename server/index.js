@@ -454,6 +454,7 @@ app.get('/id',async(req,res)=>{
         const cart = req.body;
         const todayDate = new Date().toISOString().split('T')[0]; // Format today's date as a string
         const timeString = new Date().toTimeString().split(' ')[0];
+        const datetime=todayDate+' '+timeString;
         if (!user) {
             return res.status(400).json({ error: 'User must be provided in the query parameters' });
         }
@@ -488,28 +489,24 @@ app.get('/id',async(req,res)=>{
                 }
                 await data.collection('orders').updateOne({ username: item.restaurant }, { $set: restaurantOrder }, { upsert: true });
                 await data.collection('accounts').updateOne({ username: item.restaurant }, {$set: restaurant }, {upsert: true});
-                userOrder.orders[timeString] = userOrder.orders[timeString] || []; // Initialize orders for today's date as an empty array
-                userOrder.orders[timeString].push({
+                userOrder.orders[datetime] = userOrder.orders[datetime] || [{mode:mode,donated:donated}]; // Initialize orders for today's date as an empty array
+                userOrder.orders[datetime].push({
                     item: item.item,
                     restaurant: item.restaurant,
                     cost: item.price,
                     count: item.count,
-                    date:todayDate,
-                    mode: mode,
-                    donated: donated
                 });
                 if(donated){
                     let ngo = await data.collection('orders').findOne({ username: donated });
                     if(!ngo){
                         ngo = { username: to, orders: {} };
                     }
-                    ngo.orders[timeString] = ngo.orders[timeString] || [{donatedby: user}];
-                    ngo.orders[timeString].push({
+                    ngo.orders[datetime] = ngo.orders[datetime] || [{donatedby: user}];
+                    ngo.orders[datetime].push({
                         item: item.item,
                         restaurant: item.restaurant,
                         cost: item.price,
-                        count: item.count,
-                        date:todayDate,
+                        count: item.count
                     });
                     await data.collection('orders').updateOne({ username: to},{$set:ngo},{upsert: true});
                 }
