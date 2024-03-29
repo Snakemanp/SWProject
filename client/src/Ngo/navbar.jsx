@@ -16,6 +16,10 @@ function Navbar({id}){
         </Link>
       </div>
       <div className='right'>
+      <Link to={`/ngo/${id}/donationhistory`}>
+          <button className='navele'>DONATION HISTORY</button>
+        </Link>
+        
         <Link to={`/ngo/${id}/cart`}>
           <button className='navele'>
             <FaShoppingCart size={'28'}/>

@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import {Home, User, Restaurants, Ordermenu, Cart} from './ngo.jsx';
+import {Home, User, Restaurants, Ordermenu, Cart,Success,Failure,Donationhistory} from './ngo.jsx';
 import { Routes, Route, useParams } from 'react-router-dom';
 
 function Page4() {
@@ -9,7 +9,7 @@ function Page4() {
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
   useEffect(()=>{
-    document.getElementById('root').style.backgroundImage='url(../../public/page4.avif)';
+    document.getElementById('root').style.backgroundImage='url(../../public/page4.jpg)';
     //document.getElementById('root').style.backgroundImage='url(../../public/page2.webp)';
     fetch(`http://localhost:5000/id?id=${id}`)
         .then(response=>response.json())
@@ -34,6 +34,10 @@ function Page4() {
         <Route path=":restaurant/menu" element={<Ordermenu cart={cart} setCart={setCart} user={user}/>} />
         <Route path='cart' element={<Cart cart={cart} setCart={setCart} user={user}/>} />
         <Route path="profile" element={<User user={user}/>} />
+        <Route path="donationhistory" element={<Donationhistory user={user}/>} />
+        
+        <Route path="order/success/:mode/:to" element={<Success cart={cart} user={user} setCart={setCart}/>} />
+        <Route path="order/failure" element={<Failure/>} />
         <Route path='*' element={<h1 style={{color:'blue'}}>Page Not Found</h1>} />
       </Routes>
     </>

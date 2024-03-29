@@ -40,6 +40,8 @@
   .icon{
     border-radius: 40px;
     width: 80px;
+    height: 80px;
+    object-fit: cover;
   }
   
   .restaurant-list{

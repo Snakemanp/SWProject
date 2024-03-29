@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './navbar.jsx';
 import Bottom from '../Signup/bottom.jsx'
@@ -23,9 +23,9 @@ function Home({user}){
     }
   },[]);
     return(
-        <div className='content' style={{color:'white'}}>
+        <div className='content'>
         <Navbar id={id}/>
-        <div className='Home content-main'>
+        <div className='Home content-main' style={{color:'black'}}>
             <h1 style={{marginBottom:'20px'}}>{greeting}</h1>
             <h2>Social Service Food Delivery System</h2>
             <p>Welcome to Social Service Food Delivery Site,<br/> Where you can order from our Restaurants.
@@ -64,7 +64,7 @@ function Restaurants({user}){
   
     return (
         <>
-        <div className='content' style={{color:'white',textAlign:'center'}}>
+        <div className='content' style={{color:'black',textAlign:'center'}}>
         <Navbar id={id}/>
         <h1 className='Head ele-1'>Restaurants Near You</h1>
         <ul>
@@ -204,7 +204,7 @@ function Profile({setcurview,user}){
     return(
         <>
         <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
-        <div className='profileblock' style={{color:'white'}}>
+        <div className='profileblock' style={{color:'black'}}>
             <img src={profile.url} alt='Image' className='base-ele prof-image'/>
             <h2 className='base-ele'>{profile.username}</h2>
             <p className='profile-p'>EMAIL</p><p className='profile-p'>{profile.email}</p>
@@ -303,7 +303,7 @@ function Setprofile({user}) {
       };
 
     return (
-        <div className='profileblock' style={{color:'white'}}>
+        <div className='profileblock' style={{color:'black'}}>
              <input
                 type="file"
                 accept="image/*"
@@ -344,13 +344,71 @@ function Setprofile({user}) {
         </div>
     );
 }
+function Orderelement({order,datetime}){
+    const mode = order[0].mode;
+    const donated = order[0].donated;
+    const value=order[0].value;
+    const items = order.slice(1);
+
+    return (
+        <div style={{backgroundColor:'blue',width:'30vw'}}>
+            <p>Order on: {datetime}</p>
+            <p>Order Mode: {mode}</p>
+            <p>Order Value:{value}</p>
+            {donated && <p>Donated to: {donated}</p>}
+            {items.map((item, index) => (
+                <div key={index} style={{display:'flex',justifyContent:'space-around'}}>
+                    <p>{item.item}</p>
+                    <p>{item.restaurant}</p>
+                    <p>Rs{item.cost}</p>
+                    <p>{item.count}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function OrderHistory({ username }) {
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/orderhistory?username=${username}`);
+                console.log(username);
+                if (response.ok) {
+                    const data = await response.json();
+                    setOrders(data);
+                    console.log(data);
+                } else {
+                    console.error('Failed to fetch orders:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        };
+
+        fetchOrders();
+        console.log(orders);
+    }, [username]);
+
+    return (
+        <div>
+            <h1 style={{margin:'auto'}}>All Orders</h1>
+            {Object.entries(orders).map(([key, value]) => (
+                <Orderelement key={key} order={value} datetime={key} />
+            ))}
+        </div>
+    );
+}
 
 function User({user}) {
     const [curview, setcurview] = useState('Profile');
     const {id}=useParams();
+    const username=user.username;
 
     return (
-        <div className='content' style={{alignItems:'stretch',color:'white'}}>
+        <div className='content' style={{alignItems:'stretch'}}>
             <Navbar id={id}/>
             <div className='Profile-block'>
                 <div id='Profile'>
@@ -358,7 +416,7 @@ function User({user}) {
                 {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
                 </div>
                 <div id='order-history' style={{marginTop:'10vh'}}>
-                    <h1>Order History</h1>
+                    <OrderHistory username={username}/>
                 </div>
             </div>
             <Bottom />
@@ -398,7 +456,7 @@ function Cart({ cart, setCart,user }) {
 
     function payment(to,delc,cost){
         if(cost<=0) return
-        fetch(`http://localhost:5000/user/payment/online?id=${id}`,{
+        fetch(`http://localhost:5000/Ngo/payment/online?id=${id}`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -415,7 +473,7 @@ function Cart({ cart, setCart,user }) {
         })
     }
     return (
-        <div className='content' style={{ color: 'white', textAlign: 'center' }}>
+        <div className='content' style={{ color: 'black', textAlign: 'center' }}>
             <Navbar id={id}/>
             <h2 style={{ fontSize: '40px' }}>Cart</h2>
             {cart.length === 0 ? (
@@ -448,5 +506,127 @@ function Cart({ cart, setCart,user }) {
         </div>
     );
 }
+function Success({cart,user,setCart}){
+    const {to,mode}=useParams();
+    const {id}=useParams();
+    const username=user.username;
+    let i=0;
+    async function placeorder(toParam){
+        const data = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body:JSON.stringify(cart)
+        }
+        let url = `http://localhost:5000/post/order/${mode}?user=${username}`;
+        if (toParam) {
+            url += `&to=${toParam}`;
+        }
+        await fetch(url,data)
+        .then(setCart([]));
+        setCart([]);
+        console.log('paid')
+    }
+    //placeorder(to);
+    //console.log(to);
+    const initialized = useRef(false)
+    useEffect(()=>{
+        if(!initialized.current){
+            initialized.current = true;
+            placeorder(to);
+            console.log(to);
+        }
+        setCart([]);
+    },[])
+    return(
+        <div className='content'>
+            <Navbar id={id}/>
+            {to===username && <h1 style={{margin:'auto',color:'black',textAlign:'center'}}>Order is Recieved Successfully<br />Our delivery partner will contact you soon</h1>}
+            {to==='NGO' && <h1 style={{margin:'auto',color:'black'}}>Order to be Donated</h1>}
+            {to==='Self' && <h1 style={{margin:'auto',color:'black'}}>Order is Placed in Restaurant</h1>}
+            <Bottom />
+        </div>
+    )
+}
 
-export {Home,User,Restaurants,Ordermenu,Cart};
+function Failure(){
+    const {id}=useParams();
+    return(
+        <div className='content'>
+            <Navbar id={id}/>
+            <h1 style={{margin:'auto',color:'black',textAlign:'center'}}>Failure in payment</h1>
+            <Bottom />
+        </div>
+    )
+}
+//donation history
+
+
+
+function Donationelement({order,datetime}){
+  
+    const donatedby= order[0].donatedby;
+    const items = order.slice(1);
+
+    return (
+        <div style={{backgroundColor:'blue',width:'30vw'}}>
+            <p>Order on: {datetime}</p>
+
+            {donatedby && <p>Donated by: {donatedby}</p>}
+            {items.map((item, index) => (
+                <div key={index} style={{display:'flex',justifyContent:'space-around'}}>
+                    <p>{item.item}</p>
+                    <p>{item.restaurant}</p>
+                    <p>Rs{item.cost}</p>
+                    <p>{item.count}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+
+
+function Donationhistory({ user }) {
+    const username=user.username;
+    const {id}=useParams();
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/donationhistory?username=${username}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setOrders(data);
+                    console.log(data);
+                } else {
+                    console.error('Failed to fetch orders:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        };
+    
+        fetchOrders();
+    }, [username]); // Removed console.log(orders) from here as it won't log updated state immediately
+        return (
+            <div className='donation-container'>
+            <Navbar id={id} />
+            <h1 style={{ margin: 'auto' }}>All Donations</h1>
+            <div className="donation-content">
+                {Object.entries(orders).map(([key, value]) => (
+                    <Donationelement key={key} order={value} datetime={key} />
+                ))}
+            </div>
+            <Bottom />
+        </div>
+    );
+}
+
+
+
+
+
+export {Home,User,Restaurants,Ordermenu,Cart,Success,Failure,Donationhistory};

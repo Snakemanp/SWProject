@@ -10,18 +10,19 @@ const axios = require('axios');
 const multer = require('multer');
 const opencage = require('opencage-api-client');
 const { getDistance } = require('geolib');
-
+const moment = require('moment');
 const stripe=require('stripe')(process.env.STRIPE_KEY);
 
 const port = 5000;
 let data;
 const app = express();
-/*app.use(cors({
+app.use(cors({
     origin: 'http://localhost:5173',
-}));*/
-app.use(cors());
+}));
+//app.use(cors());
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
+let backendObject={start:'00-00-00',stop:'23-59-59'};
 
 // Function to get coordinates for a given address
 async function getCoordinates(address) {
@@ -55,6 +56,32 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+app.get('/validatePasskey', (req, res) => {
+    const passkey = req.query.passkey;
+    const expectedPasskey = '22CS10015';
+    console.log(passkey);
+
+    if (passkey === expectedPasskey) {
+        res.status(200).send('Passkey is valid');
+    } else {
+        res.status(400).send('Passkey is invalid');
+    }
+});
+
+app.post('/setTimes', (req, res) => {
+    const { start, stop } = req.body;
+    
+    if (!start || !stop) {
+        return res.status(400).json({ error: 'Both start and stop times are required.' });
+    }
+
+    backendObject.start = start;
+    backendObject.stop = stop;
+
+    res.status(200).json({ message: 'Start and stop times set successfully.' });
+});
+
+
 app.post('/signup', async (req, res) => {
     const requestData = req.body;
     
@@ -81,17 +108,32 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+function isBetweenTimes(currentTime, startTime, stopTime) {
+    return moment(currentTime, 'HH:mm:ss').isBetween(moment(startTime, 'HH:mm:ss'), moment(stopTime, 'HH:mm:ss'), null, '[]');
+}
+
 app.post('/signin', async (req, res) => {
     const requestData = req.body;
-    //console.log(requestData);
 
-    // Example: Query data from a MongoDB collection
     try {
         const user = await data.collection('accounts').findOne({ username: requestData.username });
-        if (user && user.password === requestData.password) {
-            res.json({ message: 'Signin successful', accounttype: user.userType, id:user._id});
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized', message: 'User not found.' });
+        }
+
+        if (user.userType === 'RESTAURANT') {
+            // Check if the current time is between start and stop times
+            const currentTime = moment().format('HH:mm:ss');
+            if (!isBetweenTimes(currentTime, backendObject.start, backendObject.stop)) {
+                return res.status(401).json({ error: 'Unauthorized', message: 'Login not allowed at this time' });
+            }
+        }
+
+        if (user.password === requestData.password) {
+            return res.json({ message: 'Signin successful', accounttype: user.userType, id: user._id });
         } else {
-            res.status(401).json({ error: 'Unauthorized',message: 'Incorrect Username or Password'});
+            return res.status(401).json({ error: 'Unauthorized', message: 'Incorrect Username or Password' });
         }
     } catch (error) {
         console.error('Error querying document:', error);
@@ -103,6 +145,28 @@ app.get('/restaurants', async (req, res) => {
     try {
         // Assuming you have a collection named 'restaurants' in your database
         const restaurants = await data.collection('accounts').find({userType: 'RESTAURANT'}).toArray();
+        res.json(restaurants);
+    } catch (error) {
+        console.error('Error querying restaurants:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/customers', async (req, res) => {
+    try {
+        // Assuming you have a collection named 'restaurants' in your database
+        const restaurants = await data.collection('accounts').find({userType: 'CUSTOMER'}).toArray();
+        res.json(restaurants);
+    } catch (error) {
+        console.error('Error querying restaurants:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/Ngo', async (req, res) => {
+    try {
+        // Assuming you have a collection named 'restaurants' in your database
+        const restaurants = await data.collection('accounts').find({userType: 'NGO'}).toArray();
         res.json(restaurants);
     } catch (error) {
         console.error('Error querying restaurants:', error);
@@ -530,9 +594,24 @@ app.get('/id',async(req,res)=>{
             res.json(orders);
         }
         catch{
-            res.error(500).json({error:'server error'});
+            res.status(500).json({ error: 'server error' });
         }
     })
+
+    app.get('/donationhistory', async (req, res) => {
+        const { username } = req.query;
+        // const { username } = "NGO"; // This line seems unnecessary or misplaced
+        console.log(username)
+        console.log("hello");
+        try {
+            const user = await data.collection('orders').findOne({ username: username });
+            const orders = user ? user.orders || {} : {};
+            res.json(orders);
+        } catch (error) {
+            res.status(500).json({ error: 'server error' });
+        }
+    });
+    
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
