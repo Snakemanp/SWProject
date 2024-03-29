@@ -349,19 +349,21 @@ function Setprofile({user}) {
 function Orderelement({order,datetime}){
     const mode = order[0].mode;
     const donated = order[0].donated;
+    const value=order[0].value;
     const items = order.slice(1);
 
     return (
-        <div>
+        <div style={{backgroundColor:'blue',width:'30vw'}}>
             <p>Order on: {datetime}</p>
             <p>Order Mode: {mode}</p>
+            <p>Order Value:{value}</p>
             {donated && <p>Donated to: {donated}</p>}
             {items.map((item, index) => (
-                <div key={index}>
-                    <p>Item: {item.item}</p>
-                    <p>Restaurant: {item.restaurant}</p>
-                    <p>Cost: {item.cost}</p>
-                    <p>Count: {item.count}</p>
+                <div key={index} style={{display:'flex',justifyContent:'space-around'}}>
+                    <p>{item.item}</p>
+                    <p>{item.restaurant}</p>
+                    <p>Rs{item.cost}</p>
+                    <p>{item.count}</p>
                 </div>
             ))}
         </div>

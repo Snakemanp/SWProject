@@ -23,9 +23,9 @@ function Home({user}){
     }
   },[]);
     return(
-        <div className='content'>
+        <div className='content' style={{color:'white'}}>
         <Navbar id={id}/>
-        <div className='Home content-main' style={{color:'black'}}>
+        <div className='Home content-main'>
             <h1 style={{marginBottom:'20px'}}>{greeting}</h1>
             <h2>Social Service Food Delivery System</h2>
             <p>Welcome to Social Service Food Delivery Site,<br/> Where you can order from our Restaurants.
@@ -64,7 +64,7 @@ function Restaurants({user}){
   
     return (
         <>
-        <div className='content' style={{color:'black',textAlign:'center'}}>
+        <div className='content' style={{color:'white',textAlign:'center'}}>
         <Navbar id={id}/>
         <h1 className='Head ele-1'>Restaurants Near You</h1>
         <ul>
@@ -204,7 +204,7 @@ function Profile({setcurview,user}){
     return(
         <>
         <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
-        <div className='profileblock' style={{color:'black'}}>
+        <div className='profileblock' style={{color:'white'}}>
             <img src={profile.url} alt='Image' className='base-ele prof-image'/>
             <h2 className='base-ele'>{profile.username}</h2>
             <p className='profile-p'>EMAIL</p><p className='profile-p'>{profile.email}</p>
@@ -303,7 +303,7 @@ function Setprofile({user}) {
       };
 
     return (
-        <div className='profileblock' style={{color:'black'}}>
+        <div className='profileblock' style={{color:'white'}}>
              <input
                 type="file"
                 accept="image/*"
@@ -350,7 +350,7 @@ function User({user}) {
     const {id}=useParams();
 
     return (
-        <div className='content' style={{alignItems:'stretch'}}>
+        <div className='content' style={{alignItems:'stretch',color:'white'}}>
             <Navbar id={id}/>
             <div className='Profile-block'>
                 <div id='Profile'>
@@ -415,7 +415,7 @@ function Cart({ cart, setCart,user }) {
         })
     }
     return (
-        <div className='content' style={{ color: 'black', textAlign: 'center' }}>
+        <div className='content' style={{ color: 'white', textAlign: 'center' }}>
             <Navbar id={id}/>
             <h2 style={{ fontSize: '40px' }}>Cart</h2>
             {cart.length === 0 ? (

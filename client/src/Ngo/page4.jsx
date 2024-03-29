@@ -9,7 +9,7 @@ function Page4() {
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
   useEffect(()=>{
-    document.getElementById('root').style.backgroundImage='url(https://wallpaperboat.com/wp-content/uploads/2019/10/free-website-background-21.jpg)';
+    document.getElementById('root').style.backgroundImage='url(../../public/page4.avif)';
     //document.getElementById('root').style.backgroundImage='url(../../public/page2.webp)';
     fetch(`http://localhost:5000/id?id=${id}`)
         .then(response=>response.json())

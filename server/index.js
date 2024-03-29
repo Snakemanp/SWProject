@@ -224,24 +224,12 @@ app.get('/user/:username', async (req, res) => {
 
 app.get('/Restaurants/:username/orders', async (req, res) => {
     const { username } = req.params;
-    const day = new Date();
+    const { day } = req.query;
+    console.log(day);
     try {
-        const user = await data.collection('orders').findOne({ username: username });
-        if (user) {
-            // Check if user.orders is an object containing orders for each day
-            if (user.orders && typeof user.orders === 'object') {
-                const todayOrders = user.orders[day.getDate()];
-                if (todayOrders) {
-                    res.json(todayOrders);
-                } else {
-                    res.json({ error: 'No orders found for today' });
-                }
-            } else {
-                res.json({ error: 'Orders not found or invalid format' });
-            }
-        } else {
-            res.json({ error: 'User not found',date: day.getDate()});
-        }
+        const userOrders = await data.collection('orders').findOne({ username: username });
+        console.log(userOrders.items[day]);
+        res.json({orders:userOrders.items[day]})
     } catch (error) {
         console.error('Error querying document:', error);
         res.status(500).json({ error: 'Internal server error' });

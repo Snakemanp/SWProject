@@ -37,21 +37,59 @@ function Home({user}){
         </div>
     );
 }
-function Orders({user}){
-    const [orderdata,setorderdata]=useState({});
-    const {id}=useParams();
-    useEffect(()=>{
-        const date = new Date();
 
-    })
-    return(
-        <div className='content'>
-            <Navbar id={id}/>
+function Orders({ user }) {
+    const [orderdata, setOrderdata] = useState([]);
+    const tdate = new Date().toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState(tdate);
+    const username = user.username;
+    const { id } = useParams();
+
+    const fetchOrders = (date) => {
+        fetch(`http://localhost:5000/Restaurants/${username}/orders?day=${selectedDate}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.orders) {
+                    setOrderdata(data.orders);
+                }
+                else{
+                    setOrderdata([]);
+                }
+            })
+            .catch(error => console.error('Error fetching orders:', error));
+    };
+
+    useEffect(() => {
+        fetchOrders(selectedDate);
+        console.log(orderdata);
+    }, [selectedDate]);
+
+    const handleDateChange = (e) => {
+        setSelectedDate(e.target.value);
+    };
+
+    return (
+        <div className='content' style={{ color: 'white', textAlign: 'center' }}>
+            <Navbar id={id} />
+            <h1>Orders on {selectedDate}</h1>
+            <button type='button' onClick={() => setSelectedDate(tdate)}>Reset Date</button>
+            <input id='date' type="date" value={selectedDate} onChange={handleDateChange} />
+            {Object.values(orderdata).map((order, index) => (
+            <div key={index}>
+                <ul>
+                    <li>
+                        <p>Item: {order.item}</p>
+                        <p>Customer: {order.customer}</p>
+                        <p>Cost: {order.cost}</p>
+                        <p>Count: {order.count}</p>
+                    </li>
+                </ul>
+            </div>
+        ))}
             <Bottom />
         </div>
-    )
+    );
 }
-
 function Menu({user}){
     const username=user.username;
     const {id} = useParams();
@@ -471,16 +509,11 @@ function User({user}) {
     const [curview, setcurview] = useState('Profile');
 
     return (
-        <div className='content' style={{alignItems:'stretch',color:'white'}}>
+        <div className='content' style={{alignItems:'stretch',color:'white',textAlign:'center'}}>
             <Navbar />
-            <div className='Profile-block'>
-                <div id='Profile'>
-                {curview==='Profile'&& <Profile setcurview={setcurview} user={user}/>}
-                {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
-                </div>
-                <div id='order-history' style={{marginTop:'10vh'}}>
-                    <h1>Order History</h1>
-                </div>
+            <div id='Profile'>
+            {curview==='Profile'&& <Profile setcurview={setcurview} user={user}/>}
+            {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
             </div>
             <Bottom />
         </div>
