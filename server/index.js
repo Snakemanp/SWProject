@@ -448,12 +448,21 @@ app.get('/id',async(req,res)=>{
         }
     });
 
+    const calculateTotalCost = (cart) => {
+        let total = 0;
+        cart.forEach(item => {
+            total += parseFloat(item.price) * item.count;
+        });
+        return(total);
+    };
+
     app.post('/post/order/:mode', async (req, res) => {
         const { user, to } = req.query;
         const {mode} = req.params;
         const cart = req.body;
         const todayDate = new Date().toISOString().split('T')[0]; // Format today's date as a string
         const timeString = new Date().toTimeString().split(' ')[0];
+        const val=calculateTotalCost(cart);
         const datetime=todayDate+' '+timeString;
         if (!user) {
             return res.status(400).json({ error: 'User must be provided in the query parameters' });
@@ -489,7 +498,7 @@ app.get('/id',async(req,res)=>{
                 }
                 await data.collection('orders').updateOne({ username: item.restaurant }, { $set: restaurantOrder }, { upsert: true });
                 await data.collection('accounts').updateOne({ username: item.restaurant }, {$set: restaurant }, {upsert: true});
-                userOrder.orders[datetime] = userOrder.orders[datetime] || [{mode:mode,donated:donated}]; // Initialize orders for today's date as an empty array
+                userOrder.orders[datetime] = userOrder.orders[datetime] || [{mode:mode,donated:donated,value:val}]; // Initialize orders for today's date as an empty array
                 userOrder.orders[datetime].push({
                     item: item.item,
                     restaurant: item.restaurant,

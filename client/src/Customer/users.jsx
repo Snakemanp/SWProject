@@ -346,6 +346,27 @@ function Setprofile({user}) {
     );
 }
 
+function Orderelement({order,datetime}){
+    const mode = order[0].mode;
+    const donated = order[0].donated;
+    const items = order.slice(1);
+
+    return (
+        <div>
+            <p>Order on: {datetime}</p>
+            <p>Order Mode: {mode}</p>
+            {donated && <p>Donated to: {donated}</p>}
+            {items.map((item, index) => (
+                <div key={index}>
+                    <p>Item: {item.item}</p>
+                    <p>Restaurant: {item.restaurant}</p>
+                    <p>Cost: {item.cost}</p>
+                    <p>Count: {item.count}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
 function OrderHistory({ username }) {
     const [orders, setOrders] = useState([]);
 
@@ -367,20 +388,14 @@ function OrderHistory({ username }) {
         };
 
         fetchOrders();
+        console.log(orders);
     }, [username]);
 
     return (
         <div>
-            <h2>Order History</h2>
-            {Object.values(orders).flat().map((order, index) => (
-                <li key={index}>
-                <div>Item: {order.item}</div>
-                <div>Restaurant: {order.restaurant}</div>
-                <div>Cost: {order.cost}</div>
-                <div>Count: {order.count}</div>
-                <div>Date: {order.date}</div>
-                <div>Donated: {order.donated}</div>
-                </li>
+            <h1 style={{margin:'auto'}}>All Orders</h1>
+            {Object.entries(orders).map(([key, value]) => (
+                <Orderelement key={key} order={value} datetime={key} />
             ))}
         </div>
     );

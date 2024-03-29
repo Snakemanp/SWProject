@@ -367,7 +367,6 @@ function User({user}) {
 }
 
 function Cart({ cart, setCart,user }) {
-    const navigate=useNavigate();
     const username = user.username;
     const {id}=useParams();
     const [cost,setcost]=useState(0);
@@ -399,7 +398,7 @@ function Cart({ cart, setCart,user }) {
 
     function payment(to,delc,cost){
         if(cost<=0) return
-        fetch(`http://localhost:5000/user/payment?id=${id}`,{
+        fetch(`http://localhost:5000/user/payment/online?id=${id}`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -443,7 +442,7 @@ function Cart({ cart, setCart,user }) {
                 <p>Delivery charges:Rs{delcost}</p>
                 <p>Total Rs: {parseInt(cost+delcost)}</p>
                 <button onClick={()=>{payment(username,delcost,cost)}}>Place Order</button>
-                <button onClick={()=>{payment(username,0)}}>Self Pickup</button>
+                <button onClick={()=>{payment(username,0,cost)}}>Self Pickup</button>
             </div>
             <Bottom />
         </div>
