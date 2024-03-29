@@ -454,11 +454,11 @@ function Cart({ cart, setCart,user }) {
         calculateDeliveryCharges();
     }, [cart]);
 
-    const totalAmount = cost + delcost;
+    let totalAmount = cost + delcost;
 
-    function payment(to,delc){
-        if(totalAmount<=0) return
-        fetch(`http://localhost:5000/user/payment?id=${id}`,{
+    function payment(to,delc,cost){
+        if(cost<=0) return
+        fetch(`http://localhost:5000/user/payment/Online?id=${id}`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -501,10 +501,10 @@ function Cart({ cart, setCart,user }) {
                 <p>Items Cost:Rs{cost}</p>
                 <p>Delivery charges:Rs{delcost}</p>
                 <p>Total Rs: {totalAmount}</p>
-                <button onClick={()=>{payment(username,delcost)}}>Place Order</button>
-                <button onClick={()=>{payment('NGO',0)}}>Donate to NGO</button>
-                <button onClick={()=>{if(totalAmount>0)navigate(`/user/${id}/order/success/${username}`)}}>Cash on Delivery</button>
-                <button onClick={()=>{payment(username,0)}}>Self Pickup</button>
+                <button onClick={() => { payment(username, delcost, cost) }}>Place Order</button>
+                <button onClick={() => { payment('NGO', 0, cost) }}>Donate to NGO</button>
+                <button onClick={() => { navigate(`/user/${id}/order/success/COD/${username}`) }}>Cash on Delivery</button>
+                <button onClick={() => { payment(username, 0, cost) }}>Self Pickup</button>
             </div>
             <Bottom />
         </div>
@@ -512,7 +512,7 @@ function Cart({ cart, setCart,user }) {
 }
 
 function Success({cart,user,setCart}){
-    const {to}=useParams();
+    const {to,mode}=useParams();
     const {id}=useParams();
     const username=user.username;
     let i=0;
@@ -524,7 +524,7 @@ function Success({cart,user,setCart}){
             },
             body:JSON.stringify(cart)
         }
-        let url = `http://localhost:5000/post/order?user=${username}`;
+        let url = `http://localhost:5000/post/order/${mode}?user=${username}`;
         if (toParam) {
             url += `&to=${toParam}`;
         }

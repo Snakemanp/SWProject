@@ -399,8 +399,9 @@ app.get('/id',async(req,res)=>{
     }
 })
 
-    app.post('/user/payment', async (req, res) => {
-        const {id}=req.query;
+    app.post('/user/payment/:mode', async (req, res) => {
+        const {id} = req.query;
+        const {mode} = req.params;
         const to=req.body['to'];
         try {
         const lineItems = []; 
@@ -436,7 +437,7 @@ app.get('/id',async(req,res)=>{
             payment_method_types: ['card'],
             mode: 'payment',
             line_items: lineItems,
-            success_url: `http://localhost:5173/user/${id}/order/success/${to}`, 
+            success_url: `http://localhost:5173/user/${id}/order/success/${mode}/${to}`, 
             cancel_url:  `http://localhost:5173/user/${id}/order/failure`,
         });
 
@@ -447,8 +448,9 @@ app.get('/id',async(req,res)=>{
         }
     });
 
-    app.post('/post/order', async (req, res) => {
+    app.post('/post/order/:mode', async (req, res) => {
         const { user, to } = req.query;
+        const {mode} = req.params;
         const cart = req.body;
         const todayDate = new Date().toISOString().split('T')[0]; // Format today's date as a string
         const timeString = new Date().toTimeString().split(' ')[0];
@@ -478,10 +480,10 @@ app.get('/id',async(req,res)=>{
                     item: item.item,
                     customer: customer,
                     cost: item.price,
-                    count: item.count
+                    count: item.count,
                 });
                 let donated = null;
-                if (to) {
+                if (to!== user) {
                     donated = to;
                 }
                 await data.collection('orders').updateOne({ username: item.restaurant }, { $set: restaurantOrder }, { upsert: true });
@@ -493,8 +495,24 @@ app.get('/id',async(req,res)=>{
                     cost: item.price,
                     count: item.count,
                     date:todayDate,
+                    mode: mode,
                     donated: donated
                 });
+                if(donated){
+                    let ngo = await data.collection('orders').findOne({ username: donated });
+                    if(!ngo){
+                        ngo = { username: to, orders: {} };
+                    }
+                    ngo.orders[timeString] = ngo.orders[timeString] || [{donatedby: user}];
+                    ngo.orders[timeString].push({
+                        item: item.item,
+                        restaurant: item.restaurant,
+                        cost: item.price,
+                        count: item.count,
+                        date:todayDate,
+                    });
+                    await data.collection('orders').updateOne({ username: to},{$set:ngo},{upsert: true});
+                }
             }
             await data.collection('orders').updateOne({ username: user }, { $set: userOrder }, { upsert: true });
             res.status(200).json({ message: 'Order placed successfully' });

@@ -34,7 +34,7 @@ function Page2() {
         <Route path=":restaurant/menu" element={<Ordermenu cart={cart} setCart={setCart} user={user}/>} />
         <Route path='cart' element={<Cart cart={cart} setCart={setCart} user={user}/>} />
         <Route path="profile" element={<User user={user}/>} />
-        <Route path="order/success/:to" element={<Success cart={cart} user={user} setCart={setCart}/>} />
+        <Route path="order/success/:mode/:to" element={<Success cart={cart} user={user} setCart={setCart}/>} />
         <Route path="order/failure" element={<Failure/>} />
         <Route path='*' element={<h1 style={{color:'Red',fontSize:'60',margin:'auto'}}>Page Not Found</h1>} />
       </Routes>
