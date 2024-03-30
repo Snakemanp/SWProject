@@ -8,24 +8,24 @@ function Navbar({id}){
     <nav className='Navbar'>
       <div className='left'>
         <button className='navele' id='logo'>SSFDS</button>
-        <Link to={`/ngo/${id}/`}>
+        <Link to={`/Ngo/${id}/`}>
           <button className='navele'>HOME</button>
         </Link>
-        <Link to={`/ngo/${id}/restuarants`}>
+        <Link to={`/Ngo/${id}/restuarants`}>
           <button className='navele'>RESTAURANTS</button>
         </Link>
       </div>
       <div className='right'>
-      <Link to={`/ngo/${id}/donationhistory`}>
+      <Link to={`/Ngo/${id}/donationhistory`}>
           <button className='navele'>DONATION HISTORY</button>
         </Link>
         
-        <Link to={`/ngo/${id}/cart`}>
+        <Link to={`/Ngo/${id}/cart`}>
           <button className='navele'>
             <FaShoppingCart size={'28'}/>
           </button>
         </Link>
-        <Link to={`/ngo/${id}/profile`}>
+        <Link to={`/Ngo/${id}/profile`}>
           <button className='navele'>PROFILE</button>
         </Link>
         <Link to='/'>

@@ -552,6 +552,7 @@ function Success({cart,user,setCart}){
 
 function Failure(){
     const {id}=useParams();
+    //useEffect(()=>{document.getElementById('root').style.backgroundImage='url(../../public/page4.jpg)'})
     return(
         <div className='content'>
             <Navbar id={id}/>

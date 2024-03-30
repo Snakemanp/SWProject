@@ -457,7 +457,8 @@ app.get('/id',async(req,res)=>{
     }
 })
 
-    app.post('/user/payment/:mode', async (req, res) => {
+    app.post('/:user/payment/:mode', async (req, res) => {
+        const {user}=req.params;
         const {id} = req.query;
         const {mode} = req.params;
         const to=req.body['to'];
@@ -495,8 +496,8 @@ app.get('/id',async(req,res)=>{
             payment_method_types: ['card'],
             mode: 'payment',
             line_items: lineItems,
-            success_url: `http://localhost:5173/user/${id}/order/success/${mode}/${to}`, 
-            cancel_url:  `http://localhost:5173/user/${id}/order/failure`,
+            success_url: `http://localhost:5173/${user}/${id}/order/success/${mode}/${to}`, 
+            cancel_url:  `http://localhost:5173/${user}/${id}/order/failure`,
         });
 
         res.json({ url: session.url });
