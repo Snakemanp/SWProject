@@ -158,7 +158,7 @@ function Ordermenu({ cart, setCart, user }) {
                             <div className="price">
                                 <span>Price:</span>
                                 <span className="original-price">{menu[itemName].price}</span>
-                                <span className="discounted-price">{parseFloat(menu[itemName].price) * 0.8}</span>
+                                <span className="discounted-price">{parseFloat(menu[itemName].price) * 0.6}</span>
                             </div>
                             <p>Plate count: {menu[itemName].count}</p>
                         </div>
@@ -171,7 +171,7 @@ function Ordermenu({ cart, setCart, user }) {
                                 value={itemList[itemName]}
                                 onChange={(e) => handleInputChange(itemName, parseInt(e.target.value))}
                             />
-                            <button onClick={() => { addtocart(itemName, menu[itemName].count, parseFloat(menu[itemName].price) * 0.8, menu[itemName].url, itemList[itemName]) }}>Save Changes</button>
+                            <button onClick={() => { addtocart(itemName, menu[itemName].count, parseFloat(menu[itemName].price) * 0.6, menu[itemName].url, itemList[itemName]) }}>Save Changes</button>
                         </div>
                     </div>
                 ))}
@@ -346,7 +346,16 @@ function Setprofile({user}) {
 }
 function Orderelement({order,datetime}){
     const mode = order[0].mode;
-    const donated = order[0].donated;
+    // if({})
+    const donatedby=order[0].donatedby;
+    const donated=order[0].donated;
+   console.log({donatedby});
+   if (!(donatedby!== null&&donated===null)){
+    return null; // If donated is null, return nothing
+}
+
+
+
     const value=order[0].value;
     const items = order.slice(1);
 
@@ -531,19 +540,20 @@ function Success({cart,user,setCart}){
     //placeorder(to);
     //console.log(to);
     const initialized = useRef(false)
-    useEffect(()=>{
-        if(!initialized.current){
+    useEffect(() => {
+        if (!initialized.current) {
             initialized.current = true;
             placeorder(to);
             console.log(to);
+            setCart([]);
         }
-        setCart([]);
-    },[])
+    }, [initialized]);
+    
     return(
         <div className='content'>
             <Navbar id={id}/>
             {to===username && <h1 style={{margin:'auto',color:'black',textAlign:'center'}}>Order is Recieved Successfully<br />Our delivery partner will contact you soon</h1>}
-            {to==='NGO' && <h1 style={{margin:'auto',color:'black'}}>Order to be Donated</h1>}
+          
             {to==='Self' && <h1 style={{margin:'auto',color:'black'}}>Order is Placed in Restaurant</h1>}
             <Bottom />
         </div>
@@ -552,7 +562,6 @@ function Success({cart,user,setCart}){
 
 function Failure(){
     const {id}=useParams();
-    //useEffect(()=>{document.getElementById('root').style.backgroundImage='url(../../public/page4.jpg)'})
     return(
         <div className='content'>
             <Navbar id={id}/>
@@ -566,8 +575,14 @@ function Failure(){
 
 
 function Donationelement({order,datetime}){
+    const donated=order[0].donated;
+   console.log({donated});
+   if (donated === null) {
+    return null; // If donated is null, return nothing
+}
   
     const donatedby= order[0].donatedby;
+    
     const items = order.slice(1);
 
     return (

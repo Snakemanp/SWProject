@@ -457,8 +457,7 @@ app.get('/id',async(req,res)=>{
     }
 })
 
-    app.post('/:user/payment/:mode', async (req, res) => {
-        const {user}=req.params;
+    app.post('/user/payment/:mode', async (req, res) => {
         const {id} = req.query;
         const {mode} = req.params;
         const to=req.body['to'];
@@ -496,8 +495,57 @@ app.get('/id',async(req,res)=>{
             payment_method_types: ['card'],
             mode: 'payment',
             line_items: lineItems,
-            success_url: `http://localhost:5173/${user}/${id}/order/success/${mode}/${to}`, 
-            cancel_url:  `http://localhost:5173/${user}/${id}/order/failure`,
+            success_url: `http://localhost:5173/user/${id}/order/success/${mode}/${to}`, 
+            cancel_url:  `http://localhost:5173/user/${id}/order/failure`,
+        });
+
+        res.json({ url: session.url });
+        } catch (e) {
+        // Handle any errors and send an error response
+        res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.post('/Ngo/payment/:mode', async (req, res) => {
+        const {id} = req.query;
+        const {mode} = req.params;
+        const to=req.body['to'];
+        try {
+        const lineItems = []; 
+        for (const item of req.body['cart']) {
+            const restaurant = item.restaurant;
+            const itemName = item.item;
+            const menu = await data.collection('accounts').findOne({ username: restaurant });
+            const menuItem=menu.menu[itemName];
+            //console.log(menuItem);
+            const lineItem = {
+                price_data: {
+                    currency: 'inr',
+                    product_data: {
+                        name: `${itemName} - ${restaurant}`
+                    },
+                    unit_amount: parseInt(menuItem.price) * 60
+                },
+                quantity: item.count
+            };
+            lineItems.push(lineItem);
+        }
+        lineItems.push(
+            {price_data: {
+            currency: 'inr',
+            product_data: {
+                name: 'delivery charges' 
+            },
+            unit_amount: parseInt(req.body.delivery)*100
+        },
+        quantity: 1});
+        //console.log(lineItems);
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: lineItems,
+            success_url: `http://localhost:5173/Ngo/${id}/order/success/${mode}/${to}`, 
+            cancel_url:  `http://localhost:5173/Ngo/${id}/order/failure`,
         });
 
         res.json({ url: session.url });
