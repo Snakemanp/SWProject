@@ -1,0 +1,31 @@
+.bottom{
+    color: white;
+    background-color: black;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    border-radius: 15px;
+    margin: auto;
+    padding: auto;
+    width: 100%;
+    border-top: 3px solid white;
+    margin-bottom: 0px;
+}
+.bottom-head{
+    grid-column: 1/-1;
+    margin: auto;
+    padding: auto;
+    font-style: italic;
+    list-style-type: none;
+}
+.bottom-li {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    margin-top: 20px;
+    list-style-type: none;
+    font-style: italic;
+}  
+.bottom-icon {
+    margin-right: 10px; /* Adjust as needed */
+    size: 32;
+}
