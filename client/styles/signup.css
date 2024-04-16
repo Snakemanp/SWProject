@@ -1,0 +1,117 @@
+  .signinblock {
+    font-size: 20px;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-gap: 0px; /* Gap between grid items */
+    align-items: centre; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: right; /* Center text */
+    width: fit-content;
+    margin: 12vh auto;
+  }
+.input-details{
+    border-radius: 5px;  
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.input-details:hover{
+   border: 2px solid   rgba(172, 255, 47, 0.58);
+}
+.ele-3{
+  border-radius: 5px;  
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+.ele-3:hover{
+  border: 2px solid   rgba(172, 255, 47, 0.58);
+}
+.ele-5{
+  border-radius: 5px;  
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+.ele-5:hover{
+  border: 2px solid   rgba(172, 255, 47, 0.58);
+}
+  .Home{
+    color: white;
+    text-align: center;
+    font-size:20px;
+    margin-top: 15vh;
+  }
+  .Head {
+    grid-column: 1 / -1; /* Span all columns */
+    margin-bottom: 10px; /* Example margin */
+  }
+  .signup {
+    grid-column: 1/-1;;
+    display: grid;
+    grid-template-columns: auto 30vw; /* Two columns, first column width based on content */
+    grid-gap: 10px; /* Gap between grid items */
+    margin-bottom: 10px; /* Example margin */
+  }
+  .ele-6 {
+    grid-column: 1 / -1; /* Span all columns */
+    min-width: 200px;
+  }
+  .ele-7 {
+    grid-column: 1 / -1; /* Span all columns */
+    margin: auto;
+    justify-content: center;
+  }
+
+  .icon{
+    border-radius: 40px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  
+  .restaurant-list{
+    font-size: 20px;
+    color: white;
+    display: grid;
+    grid-column: 1; /* Two columns */
+    grid-gap: 10px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    width: fit-content;
+    margin: 12vh auto;
+  }
+
+  .restaurant-ele{
+    color: white;
+    display: grid;
+    grid-template-columns: 80px 40vh; /* Two columns */
+    grid-gap: 0px; /* Gap between grid items */
+    align-items: center; /* Align items vertically */
+    justify-items: center; /* Align items horizontally */
+    text-align: center; /* Center text */
+    width: fit-content;
+    margin: auto;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 30px;
+    box-shadow: 5px 5px 5px rgba(255, 255, 255, 0.5);
+    padding-bottom: 10px;
+    padding-left: 15px;
+  }
+
+  .restaurant-ele div{
+    width: 50vh;
+  }
+
+  .link-button {
+    margin-top: 1vh;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /*.content-main {
+    flex: 1;  This allows the restaurant list to grow to fill remaining space 
+  }*/
+  

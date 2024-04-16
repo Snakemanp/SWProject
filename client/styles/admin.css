@@ -1,0 +1,86 @@
+.admin-content {
+    max-width: 600px;
+    height: 450px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.admin-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-div {
+    margin-bottom: 15px;
+}
+
+.admin-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* input[type="time"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+} */
+
+.admin-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.admin-btn:hover {
+    background-color: #0056b3;
+}
+
+.admin-p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #28a745; /* Green color for success message */
+}
+
+/* Navbar and Bottom styling */
+/* Add your Navbar and Bottom styling here, or link to existing styles */
+/* Container to center-align the buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Optional: Add some margin at the top */
+}
+
+.new-btn {
+    padding: 10px 20px;
+    margin: 5px; /* Adjusted margin for tighter spacing */
+    background-color: rgba(0, 0, 0, 0.7); /* Black-gray with transparency */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px; /* Decreased font size */
+    transition: background-color 0.3s ease;
+    width: 150px; /* Decreased width */
+}
+
+.new-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9); /* Darker black-gray on hover */
+}
+
+.new-btn:focus {
+    outline: none;
+}
