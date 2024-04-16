@@ -3,6 +3,7 @@
     background-color: black;
     display: grid;
     grid-template-columns: repeat(3,1fr);
+<<<<<<< HEAD
     border-radius: 15px;
     margin: auto;
     padding: auto;
@@ -16,14 +17,32 @@
     padding: auto;
     font-style: italic;
     list-style-type: none;
+=======
+    outline: 3px solid white;
+    border-radius: 25px;
+    margin: auto;
+    margin-bottom: 2px;
+    padding: auto;
+    width: 100%;
+}
+#bottom-head{
+    grid-column: 1/-1;
+    margin: auto;
+    padding: auto;
+>>>>>>> origin/main
 }
 .bottom-li {
     display: flex;
     flex-direction: row;
     margin: auto;
+<<<<<<< HEAD
     margin-top: 20px;
     list-style-type: none;
     font-style: italic;
+=======
+    margin-top: 25px;
+    list-style-type: none;
+>>>>>>> origin/main
 }  
 .bottom-icon {
     margin-right: 10px; /* Adjust as needed */

@@ -3,7 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './navbar.jsx';
 import Bottom from './bottom.jsx';
 import '../../styles/signup.css';
+<<<<<<< HEAD
 import MapComponent from '../Mapquest.jsx';
+=======
+>>>>>>> origin/main
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -80,15 +83,25 @@ function Signup() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+<<<<<<< HEAD
     const [location, setLocation] = useState({lat:null,long:null});
+=======
+    const [location, setLocation] = useState('');
+>>>>>>> origin/main
     const [userType, setUserType] = useState('CUSTOMER');
     const [responseData,setresponseData] = useState('');
     const navigate=useNavigate();
     const handleSubmit = (e) => {
+<<<<<<< HEAD
         console.log(location);
       e.preventDefault();
       // Validation logic
       if (!username || !email || !password || !location.lat) {
+=======
+      e.preventDefault();
+      // Validation logic
+      if (!username || !email || !password || !location) {
+>>>>>>> origin/main
         alert('Please fill in all fields!');
         return;
       }
@@ -118,7 +131,11 @@ function Signup() {
         <h1 className='Head ele-1'>Sign Up</h1>
         <form onSubmit={handleSubmit} className ='signup'>
             <label>Username:</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="text"
               value={username}
               style={{color:'black'}}
@@ -126,7 +143,11 @@ function Signup() {
               required
             />
             <label>Email:</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="email"
               value={email}
               style={{color:'black'}}
@@ -134,7 +155,11 @@ function Signup() {
               required
             />
             <label>Password:</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="password"
               value={password}
               style={{color:'black'}}
@@ -142,9 +167,21 @@ function Signup() {
               required
             />
             <label>Location:</label>
+<<<<<<< HEAD
             <MapComponent setLocation={setLocation} location={location}/>
             <label>User Type:</label>
             <select className='input-details' value={userType} onChange={(e) => setUserType(e.target.value)}>
+=======
+            <input
+              type="text"
+              value={location}
+              style={{color:'black'}}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+            <label>User Type:</label>
+            <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+>>>>>>> origin/main
               <option value="RESTAURANT">Restaurant</option>
               <option value="NGO">NGO</option>
               <option value="CUSTOMER">Customer</option>
@@ -158,12 +195,15 @@ function Signup() {
     );
   }
 
+<<<<<<< HEAD
 
 
 
 
 
 
+=======
+>>>>>>> origin/main
   function Restaurants() {
       const [restaurants, setRestaurants] = useState([]);
       useEffect(() => {

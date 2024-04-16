@@ -2,19 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './navbar';
 import Bottom from '../Signup/bottom';
+<<<<<<< HEAD
 import '../../styles/admin.css'
+=======
+>>>>>>> origin/main
 
 function Home(){
     const navigate=useNavigate();
     return(
         <div className='content'>
         <Navbar />
+<<<<<<< HEAD
         <div className='button-container'>
         <button onClick={()=>{navigate('restuarants')}} className='new-btn'>View Restaurants</button>
         <button onClick={()=>{navigate('customer')}} className='new-btn'>View Customers</button>
         <button onClick={()=>{navigate('Ngo')}} className='new-btn'>View NGOs</button>
         <button onClick={()=>{navigate('settime')}} className='new-btn'>Set Timings for Restaurants</button>
         </div>
+=======
+        <button onClick={()=>{navigate('restuarants')}}>View Restaurants</button>
+        <button onClick={()=>{navigate('customer')}}>View Customers</button>
+        <button onClick={()=>{navigate('Ngo')}}>View NGOs</button>
+        <button onClick={()=>{navigate('settime')}}>Set Timings for Restaurants</button>
+>>>>>>> origin/main
         <Bottom />
         </div>
     )
@@ -98,7 +108,11 @@ function Restaurants() {
                 <button type='button' onClick={() => setSelectedDate(tdate)}>Reset Date</button>
                 <input id='date' type="date" value={selectedDate} onChange={handleDateChange} />
                 {Object.values(orderdata).map((order, index) => (
+<<<<<<< HEAD
                 <div key={index} className='all-orders' style={{marginLeft:'20vw',marginRight:'20vw'}}>
+=======
+                <div key={index}>
+>>>>>>> origin/main
                     <ul>
                         <li>
                             <p>Item: {order.item}</p>
@@ -163,7 +177,11 @@ function Restaurants() {
         const items = order.slice(1);
     
         return (
+<<<<<<< HEAD
             <div className='all-orders' style={{marginLeft:'20vw',marginRight:'20vw'}}>
+=======
+            <div style={{backgroundColor:'blue',width:'30vw'}}>
+>>>>>>> origin/main
                 <p>Order on: {datetime}</p>
                 <p>Order Mode: {mode}</p>
                 <p>Order Value:{value}</p>
@@ -320,6 +338,7 @@ function Restaurants() {
             }
         };
     
+<<<<<<< HEAD
         return (<>
             <Navbar />
             <div className='admin-content'>
@@ -328,27 +347,51 @@ function Restaurants() {
                     <div className='admin-div'>
                         <label htmlFor="start-time" className='admin-label'>Begin Time:</label>
                         <input className='item-input'
+=======
+        return (
+            <div className='content'>
+                <Navbar />
+                <h2>Set Begin and End Times</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="start-time">Begin Time:</label>
+                        <input
+>>>>>>> origin/main
                             type="time"
                             id="start-time"
                             value={startTime}
                             onChange={(e) => setStartTime(e.target.value)}
                         />
                     </div>
+<<<<<<< HEAD
                     <div className='admin-div'>
                         <label htmlFor="stop-time" className='admin-label'>End Time:</label>
                         <input  className='item-input'
+=======
+                    <div>
+                        <label htmlFor="stop-time">End Time:</label>
+                        <input
+>>>>>>> origin/main
                             type="time"
                             id="stop-time"
                             value={stopTime}
                             onChange={(e) => setStopTime(e.target.value)}
                         />
                     </div>
+<<<<<<< HEAD
                     <button type="submit" className='admin-btn'>Set Times</button>
                 </form>
                 {message && <p className='admin-p'>{message}</p>}
             </div>
             <Bottom />
             </>
+=======
+                    <button type="submit">Set Times</button>
+                </form>
+                {message && <p>{message}</p>}
+                <Bottom />
+            </div>
+>>>>>>> origin/main
         );
     }
     

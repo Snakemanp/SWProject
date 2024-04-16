@@ -10,8 +10,13 @@ function Page4() {
   }, [user]);
   useEffect(()=>{
     //document.getElementById('root').style.backgroundImage='url(../../public/page4.jpg)';
+<<<<<<< HEAD
     //document.getElementById('root').style.backgroundImage='url(../../public/page2.webp)';
     document.getElementById('root').style.backgroundImage='url(https://www.efficientindia.com/img/other/ngo.png)';
+=======
+    document.getElementById('root').style.backgroundColor='white';
+    document.getElementById('root').style.backgroundImage='url(https://www.freecodecamp.org/news/content/images/size/w2000/2021/06/w-qjCHPZbeXCQ-unsplash.jpg)';
+>>>>>>> origin/main
     fetch(`http://localhost:5000/id?id=${id}`)
         .then(response=>response.json())
         .then(data=>{
@@ -36,7 +41,10 @@ function Page4() {
         <Route path='cart' element={<Cart cart={cart} setCart={setCart} user={user}/>} />
         <Route path="profile" element={<User user={user}/>} />
         <Route path="donationhistory" element={<Donationhistory user={user}/>} />
+<<<<<<< HEAD
         
+=======
+>>>>>>> origin/main
         <Route path="order/success/:mode/:to" element={<Success cart={cart} user={user} setCart={setCart}/>} />
         <Route path="order/failure" element={<Failure/>} />
         <Route path='*' element={<h1 style={{color:'blue'}}>Page Not Found</h1>} />

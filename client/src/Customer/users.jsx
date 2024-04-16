@@ -4,7 +4,10 @@ import Navbar from './navbar.jsx';
 import Bottom from '../Signup/bottom.jsx'
 import '../../styles/user.css'
 import '../../styles/signup.css'
+<<<<<<< HEAD
 import MapComponent from '../Mapquest.jsx';
+=======
+>>>>>>> origin/main
 
 function Home({user}){
     const [greeting, setGreeting] = useState('');
@@ -15,9 +18,15 @@ function Home({user}){
     const hours = date.getHours();
     console.log(user._id);
 
+<<<<<<< HEAD
     if (hours < 11) {
       setGreeting(`Good Morning`);
     } else if (hours < 16) {
+=======
+    if (hours < 12) {
+      setGreeting(`Good Morning`);
+    } else if (hours < 18) {
+>>>>>>> origin/main
       setGreeting(`Good Afternoon`);
     } else {
       setGreeting(`Good Evening`);
@@ -71,7 +80,11 @@ function Restaurants({user}){
         <ul>
             {restaurants.map((restaurant, index) => (
                 <div key={index} className='item-user'>
+<<<<<<< HEAD
                     <img className="item-image" src={restaurant.url} alt={restaurant.username} />
+=======
+                    <img src={restaurant.url} alt={restaurant.username} style={{width:'100px'/*,height:'100px'*/}}/>
+>>>>>>> origin/main
                     <div className='item-content'>
                     <h1>{restaurant.username}</h1>
                     <h3>{restaurant.location}</h3>
@@ -113,7 +126,11 @@ function Ordermenu({ cart, setCart, user }) {
     }, []);
 
     function addtocart(itemname, max, price, url, count) {
+<<<<<<< HEAD
         if(count<=0)  return;
+=======
+        if(count===0)  return;
+>>>>>>> origin/main
         const existingItemIndex = cart.findIndex(item => item.item === itemname && item.restaurant === restaurant);
         let datac = parseInt(count);
         if (existingItemIndex !== -1) {
@@ -148,23 +165,39 @@ function Ordermenu({ cart, setCart, user }) {
     return (
         <div className='content' style={{ color: 'white', textAlign: 'center' }}>
             <Navbar id={id} />
+<<<<<<< HEAD
             <h1 style={{ fontSize: '50px', color:'black' }}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
                     <div key={itemName} className='item-user'>
                         <img className='item-image' src={menu[itemName].url} alt={itemName}  />
+=======
+            <h1 style={{ fontSize: '50px' }}>Menu</h1>
+            <ul>
+                {Object.keys(menu).map(itemName => (
+                    <div key={itemName} className='item-user'>
+                        <img className='item-image' src={menu[itemName].url} alt={itemName} style={{ width: '100px' }} />
+>>>>>>> origin/main
                         <div className='item-content'>
                             <h2>{itemName}</h2>
                             <h4>{menu[itemName].Description}</h4>
                             <div className="price">
                                 <span>Price:</span>
                                 <span className="original-price">{menu[itemName].price}</span>
+<<<<<<< HEAD
                                 <span className="discounted-price">{parseInt(parseFloat(menu[itemName].price) * 0.8)}</span>
+=======
+                                <span className="discounted-price">{parseFloat(menu[itemName].price) * 0.8}</span>
+>>>>>>> origin/main
                             </div>
                             <p>Plate count: {menu[itemName].count}</p>
                         </div>
                         <div className='item-button-user'>
+<<<<<<< HEAD
                             <input className='input-details'
+=======
+                            <input
+>>>>>>> origin/main
                                 type="number"
                                 min={0}
                                 max={menu[itemName].count || ''}
@@ -172,7 +205,11 @@ function Ordermenu({ cart, setCart, user }) {
                                 value={itemList[itemName]}
                                 onChange={(e) => handleInputChange(itemName, parseInt(e.target.value))}
                             />
+<<<<<<< HEAD
                             <button onClick={() => { addtocart(itemName, menu[itemName].count, parseFloat(menu[itemName].price) * 0.8, menu[itemName].url, itemList[itemName]) }} style={{ margin: '5px' }}>Save Changes</button>
+=======
+                            <button onClick={() => { addtocart(itemName, menu[itemName].count, parseFloat(menu[itemName].price) * 0.8, menu[itemName].url, itemList[itemName]) }}>Save Changes</button>
+>>>>>>> origin/main
                         </div>
                     </div>
                 ))}
@@ -205,7 +242,11 @@ function Profile({setcurview,user}){
     }, [profile]);
     return(
         <>
+<<<<<<< HEAD
         <h2 id='heading' style={{marginLeft:'auto', paddingTop:'100px'}}> PROFILE </h2>
+=======
+        <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
+>>>>>>> origin/main
         <div className='profileblock' style={{color:'black'}}>
             <img src={profile.url} alt='Image' className='base-ele prof-image'/>
             <h2 className='base-ele'>{profile.username}</h2>
@@ -223,9 +264,15 @@ function Setprofile({user}) {
     const username = user.username;
     const [profile, setProfile] = useState({
         username: '',
+<<<<<<< HEAD
         email: ''
     });
     const [geometry, setGeometry] = useState({lat:null,lng:null});
+=======
+        email: '',
+        location: ''
+    });
+>>>>>>> origin/main
 
     // Fetch user profile data from the backend
     useEffect(() => {
@@ -237,7 +284,10 @@ function Setprofile({user}) {
                 }
                 const profileData = await response.json();
                 setProfile(profileData);
+<<<<<<< HEAD
                 setGeometry(profileData.geometry);
+=======
+>>>>>>> origin/main
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }
@@ -248,12 +298,20 @@ function Setprofile({user}) {
 
     const [newPassword, setNewPassword] = useState('');
     const [newEmail, setNewEmail] = useState('');
+<<<<<<< HEAD
     const [newGeometry, setNewGeometry] = useState('');
+=======
+    const [newLocation, setNewLocation] = useState('');
+>>>>>>> origin/main
     const [newUrl,setNewUrl]=useState('');
     useEffect(() => {
         setNewPassword(profile.password || '');
         setNewEmail(profile.email || '');
+<<<<<<< HEAD
         setNewGeometry(geometry || {lat:null,lng:null});
+=======
+        setNewLocation(profile.location || '');
+>>>>>>> origin/main
         setNewUrl(profile.url);
     }, [profile]);
 
@@ -267,7 +325,11 @@ function Setprofile({user}) {
                 body: JSON.stringify({
                     password: newPassword || profile.password, // Use existing value if not changed
                     email: newEmail || profile.email,
+<<<<<<< HEAD
                     geometry: newGeometry || profile.geometry,
+=======
+                    location: newLocation || profile.location,
+>>>>>>> origin/main
                     url: newUrl||profile.url
                 })
             });
@@ -306,8 +368,13 @@ function Setprofile({user}) {
       };
 
     return (
+<<<<<<< HEAD
         <div className='profileblock' style={{color:'black', paddingTop:'100px'}}>
              <input 
+=======
+        <div className='profileblock' style={{color:'black'}}>
+             <input
+>>>>>>> origin/main
                 type="file"
                 accept="image/*"
                 id="fileInput"
@@ -319,15 +386,24 @@ function Setprofile({user}) {
             </label>
             <h2 className='base-ele'>{username}</h2>
             <form onSubmit={handleSubmit} className ='signup'>
+<<<<<<< HEAD
             <label >PASSWORD</label>
             <input className='input-details'
+=======
+            <label>PASSWORD</label>
+            <input
+>>>>>>> origin/main
                 type="password"
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
             />
             <label>EMAILID</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
                 type="email"
                 placeholder="New Email"
                 value={newEmail}
@@ -336,7 +412,16 @@ function Setprofile({user}) {
             <label>
             LOCATION
             </label>
+<<<<<<< HEAD
             <MapComponent location={newGeometry} setLocation={setNewGeometry}/>
+=======
+            <input
+                type="text"
+                placeholder="New Location"
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+            />
+>>>>>>> origin/main
             <button className='base-ele' >Update Profile</button>
             </form>
         </div>
@@ -350,17 +435,28 @@ function Orderelement({order,datetime}){
     const items = order.slice(1);
 
     return (
+<<<<<<< HEAD
         <div className='all-orders'>
+=======
+        <div style={{backgroundColor:'blue',width:'30vw'}}>
+>>>>>>> origin/main
             <p>Order on: {datetime}</p>
             <p>Order Mode: {mode}</p>
             <p>Order Value:{value}</p>
             {donated && <p>Donated to: {donated}</p>}
             {items.map((item, index) => (
                 <div key={index} style={{display:'flex',justifyContent:'space-around'}}>
+<<<<<<< HEAD
                     <p>item-name: {item.item} </p>
                     <p>restaurant name: {item.restaurant} </p>
                     <p>cost: Rs{item.cost} </p>
                     <p>count: {item.count}</p>
+=======
+                    <p>{item.item}</p>
+                    <p>{item.restaurant}</p>
+                    <p>Rs{item.cost}</p>
+                    <p>{item.count}</p>
+>>>>>>> origin/main
                 </div>
             ))}
         </div>
@@ -391,7 +487,11 @@ function OrderHistory({ username }) {
     }, [username]);
 
     return (
+<<<<<<< HEAD
         <div className='orders-div'>
+=======
+        <div>
+>>>>>>> origin/main
             <h1 style={{margin:'auto'}}>All Orders</h1>
             {Object.entries(orders).map(([key, value]) => (
                 <Orderelement key={key} order={value} datetime={key} />
@@ -499,7 +599,11 @@ function Cart({ cart, setCart,user }) {
                 <ul>
                     {cart.map((item, index) => (
                         <div key={index} className='item-user'>
+<<<<<<< HEAD
                             <img className='item-image' src={item.url} alt={item.item}  />
+=======
+                            <img className='item-image' src={item.url} alt={item.item} style={{ width: '100px', height: '100px' }} />
+>>>>>>> origin/main
                             <div className='item-content'>
                                 <p>{item.item}</p>
                                 <p>Price: {item.price}</p>
@@ -512,6 +616,7 @@ function Cart({ cart, setCart,user }) {
                     ))}
                 </ul>
             )}
+<<<<<<< HEAD
             <div style={{ margin: '10vw'}}>
                 <p className='order-details'>Items Cost:Rs{cost}</p>
                 <p className='order-details'>Delivery charges:Rs{delcost}</p>
@@ -520,6 +625,16 @@ function Cart({ cart, setCart,user }) {
                 <button onClick={() => { navigate(`/user/${id}/findngo`) }} style={{ margin: '10px'}}>Donate to NGO</button>
                 <button onClick={() => { navigate(`/user/${id}/order/success/COD/${username}`) }} style={{ margin: '10px'}}>Cash on Delivery</button>
                 <button onClick={() => { payment(username, 0,id,cart) }} style={{ margin: '10px'}}>Self Pickup</button>
+=======
+            <div style={{ margin: '10vw' }}>
+                <p>Items Cost:Rs{cost}</p>
+                <p>Delivery charges:Rs{delcost}</p>
+                <p>Total Rs: {totalAmount}</p>
+                <button onClick={() => { payment(username, delcost,id,cart) }}>Place Order</button>
+                <button onClick={() => { navigate(`/user/${id}/findngo`) }}>Donate to NGO</button>
+                <button onClick={() => { navigate(`/user/${id}/order/success/COD/${username}`) }}>Cash on Delivery</button>
+                <button onClick={() => { payment(username, 0,id,cart) }}>Self Pickup</button>
+>>>>>>> origin/main
             </div>
             <Bottom />
         </div>
@@ -555,7 +670,11 @@ function NGO({user,cart}){
         <ul>
             {restaurants.map((restaurant, index) => (
                 <div key={index} className='item-user'>
+<<<<<<< HEAD
                     <img src={restaurant.url} alt={restaurant.username} className='item-image'/>
+=======
+                    <img src={restaurant.url} alt={restaurant.username} style={{width:'100px'/*,height:'100px'*/}}/>
+>>>>>>> origin/main
                     <div className='item-content'>
                     <h1>{restaurant.username}</h1>
                     <h3>{restaurant.location}</h3>

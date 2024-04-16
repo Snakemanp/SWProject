@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // require('dotenv').config();
 
 // const express = require('express');
@@ -618,6 +619,8 @@
 // });
 
 // module.exports=app;
+=======
+>>>>>>> origin/main
 require('dotenv').config();
 
 const express = require('express');
@@ -662,6 +665,7 @@ async function getCoordinates(address) {
     }
 }
 
+<<<<<<< HEAD
 async function getLocationString(lat, long) {
     try {
         const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=${process.env.OPENCAGE_API_KEY}&language=en&pretty=1`);
@@ -680,6 +684,8 @@ async function getLocationString(lat, long) {
     }
 }
 
+=======
+>>>>>>> origin/main
 connectToDatabase()
     .then(database=>{
         data=database;
@@ -731,12 +737,20 @@ app.post('/signup', async (req, res) => {
     }
     try {
         requestData.url='https://th.bing.com/th/id/OIP.e35f-y2MkeVR4oDiXDG9vgHaHa?rs=1&pid=ImgDetMain';
+<<<<<<< HEAD
         //const coordinates = await getCoordinates(requestData.location);
         //console.log(requestData.location);
         let geometry=requestData.location;
         requestData.location=await getLocationString(geometry.lat,geometry.lng);
         console.log(requestData.location);
         requestData.geometry = geometry;
+=======
+        const coordinates = await getCoordinates(requestData.location);
+        if (!coordinates) {
+            return res.status(500).json({ error: 'Error fetching coordinates' });
+        }
+        requestData.geometry = coordinates;
+>>>>>>> origin/main
         //console.log(requestData);
         const result = await data.collection('accounts').insertOne(requestData);
         //console.log('Inserted document with _id:', result.insertedId);
@@ -747,10 +761,13 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> origin/main
 function isBetweenTimes(currentTime, startTime, stopTime) {
     return moment(currentTime, 'HH:mm:ss').isBetween(moment(startTime, 'HH:mm:ss'), moment(stopTime, 'HH:mm:ss'), null, '[]');
 }
@@ -866,9 +883,15 @@ app.get('/list/:required', async (req, res) => {
 app.put('/user/:username/update', async (req, res) => {
     const { username } = req.params;
     const updatedData = req.body;
+<<<<<<< HEAD
     const location = await getLocationString(updatedData.geometry.lat,updatedData.geometry.lng);
     updatedData.location = location;
     console.log(location);
+=======
+    const coordinates = await getCoordinates(updatedData.location);
+    updatedData.geometry = coordinates;
+
+>>>>>>> origin/main
     try {
         // Find the user document by username
         const user = await data.collection('accounts').findOne({ username: username });
@@ -969,6 +992,7 @@ app.get('/Restaurants/:username/menu', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // app.get('/Restaurants/:username/menu', async (req, res) => {
 //     const { username } = req.params;
     
@@ -996,6 +1020,8 @@ app.get('/Restaurants/:username/menu', async (req, res) => {
 
 
 
+=======
+>>>>>>> origin/main
 app.get('/Restaurants/:username/menu/:itemname', async (req, res) => {
     const { username,itemname } = req.params;
     try {
@@ -1018,6 +1044,7 @@ app.get('/Restaurants/:username/menu/:itemname', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // app.post('/Restaurants/:username/menu/add', async (req, res) => {
 //     const { username } = req.params;
 //     const newItem = req.body;
@@ -1059,10 +1086,13 @@ app.get('/Restaurants/:username/menu/:itemname', async (req, res) => {
 //     }
 // });
 
+=======
+>>>>>>> origin/main
 app.post('/Restaurants/:username/menu/add', async (req, res) => {
     const { username } = req.params;
     const newItem = req.body;
 
+<<<<<<< HEAD
     // Extracting fields from newItem
     const { Name, url, description, count, price } = newItem;
 
@@ -1075,6 +1105,8 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
         return res.status(400).json({ error: 'Count and price should be positive values' });
     }
 
+=======
+>>>>>>> origin/main
     try {
         // Find the user document by username
         const user = await data.collection('accounts').findOne({ username: username });
@@ -1086,6 +1118,7 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
             }
 
             // Use the Name field as the itemId
+<<<<<<< HEAD
             const itemId = Name;
 
             // Add the new item to the menu object using the itemId as the key
@@ -1094,6 +1127,16 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
                 Description: description,
                 count: count,
                 price: price
+=======
+            const itemId = newItem.Name;
+
+            // Add the new item to the menu object using the itemId as the key
+            user.menu[itemId] = {
+                url: newItem.url,
+                Description: newItem.description,
+                count: newItem.count,
+                price: newItem.price
+>>>>>>> origin/main
             };
 
             // Update the user document in the database
@@ -1112,10 +1155,13 @@ app.post('/Restaurants/:username/menu/add', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> origin/main
 app.post('/Restaurants/menu/delete',async(req,res)=>{
     const requestData = req.body;
     try {
@@ -1393,4 +1439,8 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
+<<<<<<< HEAD
 module.exports=app;
+=======
+module.exports=app;
+>>>>>>> origin/main

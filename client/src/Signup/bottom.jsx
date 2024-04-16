@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { FaPhone } from 'react-icons/fa';
 // import '../../styles/bottom.css'
 // function Bottom(){
@@ -21,10 +22,14 @@
 // }
 // export default Bottom;
 import { FaPhone,FaEnvelope } from 'react-icons/fa';
+=======
+import { FaPhone } from 'react-icons/fa';
+>>>>>>> origin/main
 import '../../styles/bottom.css'
 function Bottom(){
     return(
         <div className='bottom'>
+<<<<<<< HEAD
             <h2 className="bottom-head">Contact us</h2>
             <li className="bottom-li">
                 <FaPhone className='bottom-icon' />
@@ -41,6 +46,20 @@ function Bottom(){
             <li className="bottom-head">
                 <FaEnvelope className='bottom-icon' />
                 <a href='mailto:agavinikadi@gmail.com' style={{color:"white", textDecoration:"none",marginBottom:"5px"}}>Aravind</a>
+=======
+            <h2 id="bottom-head">Contact us</h2>
+            <li className="bottom-li">
+                <FaPhone className='bottom-icon' />
+                <h2>+91-9346801728</h2>
+            </li>
+            <li className="bottom-li">
+                <FaPhone className='bottom-icon' />
+                <h2>+91-9346801728</h2>
+            </li>
+            <li className="bottom-li">
+                <FaPhone className='bottom-icon' />
+                <h2>+91-9346801728</h2>
+>>>>>>> origin/main
             </li>
         </div>
     )

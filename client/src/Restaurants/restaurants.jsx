@@ -4,7 +4,10 @@ import Navbar from './navbar.jsx';
 import Bottom from '../Signup/bottom.jsx'
 import '../../styles/signup.css'
 import '../../styles/restaurents.css'
+<<<<<<< HEAD
 import MapComponent from '../Mapquest.jsx';
+=======
+>>>>>>> origin/main
 
 function Home({user}){
     const {id}=useParams();
@@ -76,12 +79,23 @@ function Orders({ user }) {
             <button type='button' onClick={() => setSelectedDate(tdate)}>Reset Date</button>
             <input id='date' type="date" value={selectedDate} onChange={handleDateChange} />
             {Object.values(orderdata).map((order, index) => (
+<<<<<<< HEAD
             <div key={index} className='all-orders' style={{marginLeft:'200px',marginRight:'200px'}}>
             
+=======
+            <div key={index}>
+                <ul>
+                    <li>
+>>>>>>> origin/main
                         <p>Item: {order.item}</p>
                         <p>Customer: {order.customer}</p>
                         <p>Cost: {order.cost}</p>
                         <p>Count: {order.count}</p>
+<<<<<<< HEAD
+=======
+                    </li>
+                </ul>
+>>>>>>> origin/main
             </div>
         ))}
             <Bottom />
@@ -119,8 +133,13 @@ function Menu({user}){
             <h1 style={{fontSize:'50px'}}>Menu</h1>
             <ul>
                 {Object.keys(menu).map(itemName => (
+<<<<<<< HEAD
                     <div key={itemName} className='item-user'>
                         <img className="item-image"src={menu[itemName].url} alt={itemName} />
+=======
+                    <div key={itemName} className='item'>
+                        <img src={menu[itemName].url} alt={itemName} style={{width:'100px'/*,height:'100px'*/}}/>
+>>>>>>> origin/main
                         <div className='item-content'>
                         <h2>{itemName}</h2>
                         <h4>{menu[itemName].Description}</h4>
@@ -128,8 +147,13 @@ function Menu({user}){
                         <p>Plate count:{menu[itemName].count}</p>
                         </div>
                         <div className='item-button'>
+<<<<<<< HEAD
                         <button onClick={()=>{deleteitem(itemName)}} style={{marginLeft:'5px'}}>Delete Item</button>
                         <button onClick={()=>{navigate(`/Restaurants/${id}}/menu/${itemName}/edit`)}} style={{marginLeft:'5px'}}>Edit Item</button>
+=======
+                        <button onClick={()=>{deleteitem(itemName)}}>Delete Item</button>
+                        <button onClick={()=>{navigate(`/Restaurants/${id}}/menu/${itemName}/edit`)}}>Edit Item</button>
+>>>>>>> origin/main
                         </div>
                     </div>
                 ))}
@@ -185,7 +209,11 @@ function Addmenu({user}){
             <h1 className='Head ele-1'>ADD ITEM</h1>
             <form onSubmit={send} className ='signup'>
             <label>Item Name</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="text"
               value={Name}
               style={{color:'black'}}
@@ -193,21 +221,33 @@ function Addmenu({user}){
               required
             />
             <label>Description</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="text"
               value={description}
               style={{color:'black'}}
               onChange={(e) => setdescription(e.target.value)}
             />
             <label>Price</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="number"
               value={price}
               style={{color:'black'}}
               onChange={(e) => setprice(e.target.value)}
             />
             <label>Plate Count</label>
+<<<<<<< HEAD
             <input className='input-details'
+=======
+            <input
+>>>>>>> origin/main
               type="number"
               value={count}
               style={{color:'black'}}
@@ -304,7 +344,11 @@ function Edititem({user}) {
             <Navbar id={id}/>
             <div className='signinblock content-main'>
             <h1 className='Head'>Edit Item: {itemname}</h1>
+<<<<<<< HEAD
             <input  
+=======
+            <input
+>>>>>>> origin/main
                 type="file"
                 accept="image/*"
                 id="fileInput"
@@ -312,27 +356,46 @@ function Edititem({user}) {
                 onChange={handleFileChange}
             />
             <label htmlFor="fileInput" className='base-ele prof-image-button'>
+<<<<<<< HEAD
                 <img src={url} alt='Image' style={{height:'150px'}} />
             </label>
             <label>Description</label>
             <input className='input-details' style={{marginBottom:'5px'}}
+=======
+                <img src={url} alt='Image' style={{height:'100px'}} />
+            </label>
+            <label>Description</label>
+            <input
+>>>>>>> origin/main
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
             />
             <label>Price</label>
+<<<<<<< HEAD
             <input className='input-details' style={{marginBottom:'5px'}}
+=======
+            <input
+>>>>>>> origin/main
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
             />
             <label>Count</label>
+<<<<<<< HEAD
             <input className='input-details' style={{marginBottom:'5px'}}
+=======
+            <input
+>>>>>>> origin/main
                 type="number"
                 value={count}
                 onChange={(e) => setCount(e.target.value)}
             />
+<<<<<<< HEAD
             <button className='ele-7' onClick={updateItem} style={{marginTop:'5px'}}>Update Item</button>
+=======
+            <button className='ele-7' onClick={updateItem}>Update Item</button>
+>>>>>>> origin/main
             </div>
         <Bottom />
         </div>
@@ -361,6 +424,7 @@ function Profile({setcurview,user}){
     }, [profile]);
     return(
         <>
+<<<<<<< HEAD
         <h2 id='heading' style={{marginLeft:'auto',paddingTop:'10px'}}> PROFILE </h2>
         <div className='profileblock-res' style={{color:'white'}}>
             <img src={profile.url} alt='Image' className='base-ele prof-image'/>
@@ -368,6 +432,15 @@ function Profile({setcurview,user}){
             <p className='profile-p-r'>EMAIL</p><p className='profile-p-r'>{profile.email}</p>
             <p className='profile-p-r'>LOCATION</p><div className='profile-p-r'>{profile.location}</div>
             <p className='profile-p-r'>ACCOUNT TYPE</p><p className='profile-p-r'>{profile.userType}</p>
+=======
+        <h2 id='heading' style={{marginLeft:'auto'}}> PROFILE </h2>
+        <div className='profileblock' style={{color:'white'}}>
+            <img src={profile.url} alt='Image' className='base-ele prof-image'/>
+            <h2 className='base-ele'>{profile.username}</h2>
+            <p className='profile-p'>EMAIL</p><p className='profile-p'>{profile.email}</p>
+            <p className='profile-p'>LOCATION</p><div className='profile-p'>{profile.location}</div>
+            <p className='profile-p'>ACCOUNT TYPE</p><p className='profile-p'>{profile.userType}</p>
+>>>>>>> origin/main
             
             <button className='base-ele' onClick={()=>setcurview('Setprofile')}>Edit Profile</button>
         </div>
@@ -379,9 +452,15 @@ function Setprofile({user}) {
     const username = user.username;
     const [profile, setProfile] = useState({
         username: '',
+<<<<<<< HEAD
         email: ''
     });
     const [geometry, setGeometry] = useState({lat:null,lng:null});
+=======
+        email: '',
+        location: ''
+    });
+>>>>>>> origin/main
 
     // Fetch user profile data from the backend
     useEffect(() => {
@@ -393,7 +472,10 @@ function Setprofile({user}) {
                 }
                 const profileData = await response.json();
                 setProfile(profileData);
+<<<<<<< HEAD
                 setGeometry(profileData.geometry);
+=======
+>>>>>>> origin/main
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }
@@ -404,12 +486,20 @@ function Setprofile({user}) {
 
     const [newPassword, setNewPassword] = useState('');
     const [newEmail, setNewEmail] = useState('');
+<<<<<<< HEAD
     const [newGeometry, setNewGeometry] = useState('');
+=======
+    const [newLocation, setNewLocation] = useState('');
+>>>>>>> origin/main
     const [newUrl,setNewUrl]=useState('');
     useEffect(() => {
         setNewPassword(profile.password || '');
         setNewEmail(profile.email || '');
+<<<<<<< HEAD
         setNewGeometry(geometry || {lat:null,lng:null});
+=======
+        setNewLocation(profile.location || '');
+>>>>>>> origin/main
         setNewUrl(profile.url);
     }, [profile]);
 
@@ -423,7 +513,11 @@ function Setprofile({user}) {
                 body: JSON.stringify({
                     password: newPassword || profile.password, // Use existing value if not changed
                     email: newEmail || profile.email,
+<<<<<<< HEAD
                     geometry: newGeometry || profile.geometry,
+=======
+                    location: newLocation || profile.location,
+>>>>>>> origin/main
                     url: newUrl||profile.url
                 })
             });
@@ -462,8 +556,13 @@ function Setprofile({user}) {
       };
 
     return (
+<<<<<<< HEAD
         <div className='profileblock-res' >
              <input 
+=======
+        <div className='profileblock' style={{color:'white'}}>
+             <input
+>>>>>>> origin/main
                 type="file"
                 accept="image/*"
                 id="fileInput"
@@ -475,25 +574,48 @@ function Setprofile({user}) {
             </label>
             <h2 className='base-ele'>{username}</h2>
             <form onSubmit={handleSubmit} className ='signup'>
+<<<<<<< HEAD
             <label htmlFor='password' className='left-ele'>PASSWORD</label>
             <input className='input-details-r'
                 type="password"
                 id='password'
+=======
+            <label>PASSWORD</label>
+            <input
+                type="password"
+>>>>>>> origin/main
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
             />
+<<<<<<< HEAD
             <label className='left-ele'>EMAILID</label>
             <input className='input-details-r'
+=======
+            <label>EMAILID</label>
+            <input
+>>>>>>> origin/main
                 type="email"
                 placeholder="New Email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
             />
+<<<<<<< HEAD
             <label className='left-ele'>
             LOCATION
             </label>
             <MapComponent location={newGeometry} setLocation={setNewGeometry}/>
+=======
+            <label>
+            LOCATION
+            </label>
+            <input
+                type="text"
+                placeholder="New Location"
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+            />
+>>>>>>> origin/main
             <button className='base-ele' >Update Profile</button>
             </form>
         </div>
@@ -506,7 +628,11 @@ function User({user}) {
     return (
         <div className='content' style={{alignItems:'stretch',color:'white',textAlign:'center'}}>
             <Navbar />
+<<<<<<< HEAD
             <div>
+=======
+            <div id='Profile'>
+>>>>>>> origin/main
             {curview==='Profile'&& <Profile setcurview={setcurview} user={user}/>}
             {curview==='Setprofile'&& <Setprofile setcurview={setcurview} user={user}/>}
             </div>

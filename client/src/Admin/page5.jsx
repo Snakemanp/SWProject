@@ -7,9 +7,15 @@ function Page5() {
     const { passkey } = useParams();
 
     useEffect(() => {
+<<<<<<< HEAD
         document.getElementById('root').style.backgroundImage='url(https://motionarray.imgix.net/preview-698007-WkGSNZaSEvhmR420-large.jpg?w=3840&q=60&fit=max&auto=format)';
         // document.getElementById('root').style.backgroundColor='white';
          
+=======
+        document.getElementById('root').style.backgroundImage='none';
+        document.getElementById('root').style.backgroundColor='white';
+
+>>>>>>> origin/main
         fetch(`http://localhost:5000/validatePasskey?passkey=${passkey}`)
             .then(response => {
                 if (response.ok) {
