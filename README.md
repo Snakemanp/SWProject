@@ -52,7 +52,7 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 ### Run Executable Directly
 
 1. Clone the `x64/release` folder in the repository.
-2. Run the `.exe` file directly.
+2. Build it using npm.
 
 ## Contributors
 - Kasyap Kovvuru
