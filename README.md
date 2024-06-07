@@ -51,7 +51,7 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 
 ### Run Executable Directly
 
-1. Clone the `x64/release` folder in the repository.
+1. Clone the repository.
 2. Build it using npm.
 
 ## Contributors
