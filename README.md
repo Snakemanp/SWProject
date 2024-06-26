@@ -57,5 +57,6 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 ## Contributors
 - Kasyap Kovvuru
 - Aravind Gavinikadi
+  @GavinikadiAravind
 
 Feel free to update any part of the source code.
