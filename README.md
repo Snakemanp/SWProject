@@ -55,7 +55,7 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 2. Build it using npm.
 
 ## Contributors
-- Kasyap Kovvuru @
+- Kasyap Kovvuru @kovvurukasyap
 - Aravind Gavinikadi @GavinikadiAravind
 
 Feel free to update any part of the source code.
