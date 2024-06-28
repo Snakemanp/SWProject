@@ -47,7 +47,7 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 
 1. Clone the repository to your local machine.
 2. Build the project using npm.
-3. Run `npm start' and 'npm run dev' in backend and frontend folders respectively.
+3. Run ` npm start ` and ` npm run dev ` in backend and frontend folders respectively.
 
 ### Run Executable Directly
 
