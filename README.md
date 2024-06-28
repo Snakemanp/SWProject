@@ -46,8 +46,8 @@ This website integrates restaurants, NGOs, and customers, providing a platform f
 ### Build from Source
 
 1. Clone the repository to your local machine.
-2. Build the project using Visual Studio or your preferred IDE.
-3. Run the generated executable file.
+2. Build the project using npm.
+3. Run `npm start' and 'npm run dev' in backend and frontend folders respectively.
 
 ### Run Executable Directly
 
